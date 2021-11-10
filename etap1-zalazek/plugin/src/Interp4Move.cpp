@@ -40,7 +40,7 @@ void Interp4Move::PrintCmd() const
   /*
    *  Tu trzeba napisać odpowiednio zmodyfikować kod poniżej.
    */
-  cout << GetCmdName() << " Obj_A " << _Speed_mmS  << " 10" << endl;
+  cout << GetCmdName() << " "<<_ObjName<< " "<< _Speed_mmS  << " "<<_Path_mm<< endl;
 }
 
 
@@ -73,6 +73,8 @@ bool Interp4Move::ReadParams(std::istream& Strm_CmdsList)
   /*
    *  Tu trzeba napisać odpowiedni kod.
    */
+   Strm_CmdsList>>_ObjName>>_Speed_mmS>>_Path_mm;
+
   return true;
 }
 

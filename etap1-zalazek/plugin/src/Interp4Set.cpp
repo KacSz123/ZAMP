@@ -43,7 +43,7 @@ void Interp4Set::PrintCmd() const
   /*
    *  Tu trzeba napisać odpowiednio zmodyfikować kod poniżej.
    */
-  cout << GetCmdName() << " Obj_A " << _Coord_X << " " <<  _Coord_Y<< " ";
+  cout << GetCmdName()<<" " << _ObjName<<" " << _Coord_X << " " <<  _Coord_Y<< " ";
   cout << _Angle_OX<<" "<< _Angle_OY <<" " << _Angle_OZ<<endl;
 }
 
@@ -77,6 +77,7 @@ bool Interp4Set::ReadParams(std::istream& Strm_CmdsList)
   /*
    *  Tu trzeba napisać odpowiedni kod.
    */
+   Strm_CmdsList>>_ObjName>>_Coord_X>>_Coord_Y>>_Angle_OX>>_Angle_OY>>_Angle_OZ;
   return true;
 }
 

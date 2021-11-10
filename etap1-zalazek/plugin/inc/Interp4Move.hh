@@ -1,13 +1,14 @@
 #ifndef  COMMAND4MOVE_HH
 #define  COMMAND4MOVE_HH
-
+#include <sstream>
 #ifndef __GNUG__
 # pragma interface
 # pragma implementation
 #endif
 
 #include "Interp4Command.hh"
-
+#include <string>
+using namespace std;
 /*!
  * \file
  * \brief Definicja klasy Interp4Move
@@ -26,7 +27,9 @@ class Interp4Move: public Interp4Command {
    *  do przechowywania wartości parametrów danego polecenia.
    *  Ponieżej zdefiniowane jest tylko jedno pole jako przykład.
    */
-  double  _Speed_mmS;
+  int  _Speed_mmS;
+  int _Path_mm;
+  string _ObjName;
  public:
   /*!
    * \brief

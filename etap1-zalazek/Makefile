@@ -1,5 +1,5 @@
 __start__: obj __lines_for_space__ interp __plugin__
-	export LD_LIBRARY_PATH="./libs"; ./interp
+	export LD_LIBRARY_PATH="./libs"; ./interp opis_dzialan.cmd
 
 obj:
 	mkdir obj
@@ -22,11 +22,17 @@ LDFLAGS=-Wall
 
 
 
-interp: obj/main.o
-	g++ ${LDFLAGS} -o interp  obj/main.o -ldl
+interp: obj/main.o obj/LibInterface.o obj/Set4LibInterfaces.o
+	g++ ${LDFLAGS} -o interp  obj/main.o  obj/LibInterface.o obj/Set4LibInterfaces.o -ldl
 
 obj/main.o: src/main.cpp inc/Interp4Command.hh
 	g++ -c ${CPPFLAGS} -o obj/main.o src/main.cpp
+
+obj/LibInterface.o: src/LibInterface.cpp inc/LibInterface.hh
+	g++ -c ${CPPFLAGS} -o obj/LibInterface.o src/LibInterface.cpp
+
+obj/Set4LibInterfaces.o: src/Set4LibInterfaces.cpp inc/Set4LibInterfaces.hh
+	g++ -c ${CPPFLAGS} -o obj/Set4LibInterfaces.o src/Set4LibInterfaces.cpp
 
 clean:
 	rm -f obj/* interp core*

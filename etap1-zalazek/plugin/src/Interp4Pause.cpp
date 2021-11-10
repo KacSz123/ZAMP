@@ -40,7 +40,7 @@ void Interp4Pause::PrintCmd() const
   /*
    *  Tu trzeba napisać odpowiednio zmodyfikować kod poniżej.
    */
-  cout << GetCmdName() << " Obj_A " << _Sleep_Time << " 10" << endl;
+  cout << GetCmdName()<<" "<<_ObjName << " " << _Sleep_Time<< endl;
 }
 
 
@@ -73,6 +73,7 @@ bool Interp4Pause::ReadParams(std::istream& Strm_CmdsList)
   /*
    *  Tu trzeba napisać odpowiedni kod.
    */
+   Strm_CmdsList>>_ObjName>>_Sleep_Time;
   return true;
 }
 

@@ -4,16 +4,17 @@
 
 #include <cstdio>
 #include <sstream>
-#include "Interp4Command.hh"
+//#include "Interp4Command.hh"
 #include "MobileObj.hh"
-
-using namespace std;
+#include "Set4LibInterfaces.hh"
 
 #define LINE_SIZE 500
 
-bool ExecPreprocesor(const char *FileName, istringstream &IStrm4Cmds)
+using namespace std;
+
+bool ExecPreprocesor(const char *FileName, istringstream &inStr4Cmds)
 {
-  string Cmd4Preproc = "cpp -p ";
+  string Cmd4Preproc = "cpp -P ";
   char Line[LINE_SIZE];
   ostringstream OTmpStrm;
 
@@ -28,13 +29,81 @@ bool ExecPreprocesor(const char *FileName, istringstream &IStrm4Cmds)
     OTmpStrm << Line;
   }
 
-  IStrm4Cmds.str(OTmpStrm.str());
+  inStr4Cmds.str(OTmpStrm.str());
 
   return pclose(pProc) == 0;
 }
 
+/*!
+ * \brief Funkcja tworzy serię komend wraz z parametrami na podstawie zadanego strumienia.
+ *
+ * Funkcja interpretuje ciąg obiektów typu string w strumieniu utworzonym przez funkcję ExecPreprocesor(...) na serię komend wraz z parametrami.  
+ * \param[in] inStr - Strumień utworzony przez funkcję ExecPreprocesor(...) z zapisanym plikiem do przeparsowania na komendy.
+ * \param[in] LibList - Lista wszystkich komend, potrzebna do sprawdzania poprawności zadanych komend w pliku.
+ * \retval true - Utworzenie wszystkich komend zawartych w strumieniu z wartościami przepisanymi z pliku powiodło się.
+ * \retval false - Utworzenie komend zawartych w strumieniu z wartościami przepisanymi z pliku nie powiodło się.
+ */
+bool ExecActions(istringstream &inStr, Set4LibInterfaces &LibList)
+{
+  string cmdName;
+
+//dopoki wczytywane jest polecenie
+  while (inStr >> cmdName) 
+  {
+    // Czy istnieje polecenie o takiej nazwie
+    LibMap::iterator cmdIter = LibList.FindLibrary(cmdName);
+    if (cmdIter == LibList.GetEndMap())
+    {
+      cerr << "To polecenie nie istnieje:" << cmdName << endl;
+      return false;
+    }
+
+    // Jesli znajdzie polecenie tworzy instancje wtyczki
+    Interp4Command *pCmd = cmdIter->second->pCreateCmd();
+    if (!pCmd->ReadParams(inStr))
+    {
+      cerr << "Zle parametry w poleceniu" << cmdName<< endl;
+      return false;
+    }
+    cout << "Polecenie: ";
+    pCmd->PrintCmd();
+  }
+  return true;
+}
+
 int main(int argc, char **argv)
 {
+  Set4LibInterfaces LibList; // Lista (zestaw) bibliotek
+  istringstream inStr;           // strumień danych wejściowych komend
+
+  // Sprawdzanie liczby argumentów
+  if (argc != 2)
+  {
+    cout << endl << "Bledna liczba argumentow"<< endl;
+    return 1;
+  }
+// przekierowanie pliku do strumienia przez preprocesor
+  ExecPreprocesor(argv[1], inStr);
+
+  cout << endl<< "Zawartosc pliku:\n"<< inStr.str()<< endl;
+
+  // Odczytanie polecen
+  if (!ExecActions(inStr, LibList))
+    return 2;
+
+  cout<<endl<<endl;
+}
+
+
+
+
+
+
+
+
+
+
+/*
   void *pLibHnd_Move = dlopen("libInterp4Move.so", RTLD_LAZY);
   void *pLibHnd_Rotate = dlopen("libInterp4Rotate.so", RTLD_LAZY);
   void *pLibHnd_Pause = dlopen("libInterp4Pause.so", RTLD_LAZY);
@@ -49,23 +118,13 @@ int main(int argc, char **argv)
   void *pFun2;
   void *pFun3;
   void *pFun4;
-  /**/
-
-  if (argc < 2)
-  {
-    cout << endl
-         << "Zbyt mało argumentow" << endl
-         << endl;
-    return 1;
-  }
-  istringstream str;
-
-  ExecPreprocesor(argv[1], str);
-  cout << str.str() << endl;
-/***/
+  */
 
 
 
+
+
+/*
   if (!pLibHnd_Move)
   {
     cerr << "!!! Brak biblioteki: Interp4Move.so" << endl;
@@ -186,4 +245,4 @@ int main(int argc, char **argv)
   dlclose(pLibHnd_Rotate);
   dlclose(pLibHnd_Pause);
   dlclose(pLibHnd_Set);
-}
+  */

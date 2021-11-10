@@ -7,7 +7,9 @@
 #endif
 
 #include "Interp4Command.hh"
-
+#include<sstream>
+#include <string>
+using namespace std;
 /*!
  * \file
  * \brief Definicja klasy Interp4Set
@@ -26,6 +28,9 @@ class Interp4Set: public Interp4Command {
    *  do przechowywania wartości parametrów danego polecenia.
    *  Ponieżej zdefiniowane jest tylko jedno pole jako przykład.
    */
+  string _ObjName;
+
+
   double  _Coord_X;
 
   double  _Coord_Y;

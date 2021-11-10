@@ -28,7 +28,7 @@ Interp4Command* CreateCmd(void)
 /*!
  *
  */
-Interp4Rotate::Interp4Rotate(): _Angle_OZ(0), _Rot_Speed(0)
+Interp4Rotate::Interp4Rotate(): _Angle_deg(0), _Rot_Speed(0)
 {}
 
 
@@ -40,7 +40,7 @@ void Interp4Rotate::PrintCmd() const
   /*
    *  Tu trzeba napisać odpowiednio zmodyfikować kod poniżej.
    */
-  cout << GetCmdName() << " Obj_A "<< _Rot_Speed<<" " << _Angle_OZ << endl;
+  cout << GetCmdName()<<" " << _ObjName<<" "<< _Rot_Speed<<" "<< _Axis<<" " << _Angle_deg << endl;
 }
 
 
@@ -73,6 +73,7 @@ bool Interp4Rotate::ReadParams(std::istream& Strm_CmdsList)
   /*
    *  Tu trzeba napisać odpowiedni kod.
    */
+   Strm_CmdsList>>_ObjName>>_Rot_Speed>>_Axis>>_Angle_deg;
   return true;
 }
 

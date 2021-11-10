@@ -27,6 +27,7 @@ class Interp4Pause: public Interp4Command {
    *  Ponieżej zdefiniowane jest tylko jedno pole jako przykład.
    */
   double  _Sleep_Time;
+  std::string _ObjName;
  public:
   /*!
    * \brief
