@@ -14,13 +14,14 @@ using namespace std;
  * \file
  * \brief Definicja klasy Interp4Set
  *
- * Plik zawiera definicję klasy Interp4Set ...
+ * Plik zawiera definicję klasy Interp4Set , ktora 
+ * definiuje jedno z polecen dostepnych do kontroli robota
  */
 
 /*!
- * \brief Modeluje polecenie dla robota mobilnego, które wymusza jego ruch do przodu
+ * \brief Modeluje polecenie dla robota mobilnego, które wymusza ustawienie robota w okreslonej pozycji
  *
- *  Klasa modeluje ...
+ *  Klasa modeluje jego orientacje w przestrzeni, a takze polozenie
  */
 class Interp4Set: public Interp4Command {
   /*
@@ -30,17 +31,31 @@ class Interp4Set: public Interp4Command {
    */
   string _ObjName;
 
-
+  /*!
+   * \brief Zmienna opisująca kat robota wzgledem osi X
+   */
   double  _Coord_X;
 
+  /*!
+   * \brief Zmienna opisująca kat robota wzgledem osi Y
+   */
   double  _Coord_Y;
 
   //double  _Coord_Z;
 
+  /*!
+   * \brief Zmienna opisująca polozenie robota wzdluz osi X
+   */
   double  _Angle_OX;
 
+    /*!
+   * \brief Zmienna opisująca polozenie robota wzdluz osi Y
+   */
   double  _Angle_OY;
 
+  /*!
+   * \brief Zmienna opisująca polozenie robota wzdluz osi Z
+   */
   double  _Angle_OZ;
  public:
   /*!

@@ -14,11 +14,6 @@ extern "C" {
 
 
 
-/*!
- * \brief
- *
- *
- */
 Interp4Command* CreateCmd(void)
 {
   return Interp4Move::CreateCmd();

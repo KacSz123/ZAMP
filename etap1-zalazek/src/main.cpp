@@ -12,6 +12,15 @@
 
 using namespace std;
 
+/*!
+ * \brief Wczytuje i przetwarza plik przez preprocesor
+ *
+ * Funkcja wczytuje do strumienia plik i przetwarza go przez preprocesor  
+ * \param[in] inStr4Cmds - Strumien z poleceniami. Zawiera dane nieprzetworzone, np. komentarze 
+ * \param [in] FileName - Nazwa pliku z poleceniami do przetworzenia
+ * \retval true - Wczytanie i przetworzenie polecen powiodlo sie
+ * \retval false - Wczytanie i przetworzenie polecen nie powiodlo sie
+ */
 bool ExecPreprocesor(const char *FileName, istringstream &inStr4Cmds)
 {
   string Cmd4Preproc = "cpp -P ";
@@ -35,13 +44,13 @@ bool ExecPreprocesor(const char *FileName, istringstream &inStr4Cmds)
 }
 
 /*!
- * \brief Funkcja tworzy serię komend wraz z parametrami na podstawie zadanego strumienia.
+ * \brief Interpretuje serie polecen podanych przez strumien
  *
- * Funkcja interpretuje ciąg obiektów typu string w strumieniu utworzonym przez funkcję ExecPreprocesor(...) na serię komend wraz z parametrami.  
- * \param[in] inStr - Strumień utworzony przez funkcję ExecPreprocesor(...) z zapisanym plikiem do przeparsowania na komendy.
- * \param[in] LibList - Lista wszystkich komend, potrzebna do sprawdzania poprawności zadanych komend w pliku.
- * \retval true - Utworzenie wszystkich komend zawartych w strumieniu z wartościami przepisanymi z pliku powiodło się.
- * \retval false - Utworzenie komend zawartych w strumieniu z wartościami przepisanymi z pliku nie powiodło się.
+ * Funkcja interpretuje i rozpoznaje ciag polecen dla robota, przetworzonych przez preprocesor  
+ * \param[in] inStr - Strumień utworzony i zinterpretowany z pliku przez funkcję ExecPreprocesor() 
+ * \param[in] LibList - Lista wszystkich dostepnych polecen
+ * \retval true - Wczytanie i utworzenie polecen powiodlo sie
+ * \retval false - Wczytanie i utworzenie polecen nie powiodlo sie
  */
 bool ExecActions(istringstream &inStr, Set4LibInterfaces &LibList)
 {
@@ -92,157 +101,8 @@ int main(int argc, char **argv)
     return 2;
 
   cout<<endl<<endl;
+  return 0;
 }
 
 
 
-
-
-
-
-
-
-
-/*
-  void *pLibHnd_Move = dlopen("libInterp4Move.so", RTLD_LAZY);
-  void *pLibHnd_Rotate = dlopen("libInterp4Rotate.so", RTLD_LAZY);
-  void *pLibHnd_Pause = dlopen("libInterp4Pause.so", RTLD_LAZY);
-  void *pLibHnd_Set = dlopen("libInterp4Set.so", RTLD_LAZY);
-
-  Interp4Command *(*pCreateCmd_Move)(void);
-  Interp4Command *(*pCreateCmd_Rotate)(void);
-  Interp4Command *(*pCreateCmd_Pause)(void);
-  Interp4Command *(*pCreateCmd_Set)(void);
-
-  void *pFun;
-  void *pFun2;
-  void *pFun3;
-  void *pFun4;
-  */
-
-
-
-
-
-/*
-  if (!pLibHnd_Move)
-  {
-    cerr << "!!! Brak biblioteki: Interp4Move.so" << endl;
-    return 1;
-  }
-
-
-  if (!pLibHnd_Rotate)
-  {
-    cerr << "!!! Brak biblioteki: Interp4Rotate.so" << endl;
-    return 1;
-  }
-
-
-  if (!pLibHnd_Pause)
-  {
-    cerr << "!!! Brak biblioteki: Interp4Pause.so" << endl;
-    return 1;
-  }
-
-
-  if (!pLibHnd_Set)
-  {
-    cerr << "!!! Brak biblioteki: Interp4Set.so" << endl;
-    return 1;
-  }
-
-
-/////
-  pFun2 = dlsym(pLibHnd_Rotate, "CreateCmd");
-
-  if (!pFun2)
-  {
-    cerr << "!!! Nie znaleziono funkcji CreateCmd dla Rotate" << endl;
-    return 1;
-  }
-
-  pFun = dlsym(pLibHnd_Move, "CreateCmd");
-
-  if (!pFun)
-  {
-    cerr << "!!! Nie znaleziono funkcji CreateCmd dla Move" << endl;
-    return 1;
-  }
-
-
-  pFun3 = dlsym(pLibHnd_Pause, "CreateCmd");
-
-  if (!pFun3)
-  {
-    cerr << "!!! Nie znaleziono funkcji CreateCmd dla Pause" << endl;
-    return 1;
-  }
-
-  pFun4 = dlsym(pLibHnd_Set, "CreateCmd");
-
-  if (!pFun4)
-  {
-    cerr << "!!! Nie znaleziono funkcji CreateCmd dla Set" << endl;
-    return 1;
-  }
-
-
-/////
-
-
-  pCreateCmd_Move = *reinterpret_cast<Interp4Command *(**)(void)>(&pFun);
-  pCreateCmd_Rotate = *reinterpret_cast<Interp4Command *(**)(void)>(&pFun2);
-  pCreateCmd_Pause = *reinterpret_cast<Interp4Command *(**)(void)>(&pFun3);
-  pCreateCmd_Set = *reinterpret_cast<Interp4Command *(**)(void)>(&pFun4);
-////
-
-  Interp4Command *pCmd = pCreateCmd_Move();
-  Interp4Command *pCmd2 = pCreateCmd_Rotate();
-  Interp4Command *pCmd3 = pCreateCmd_Pause();
-  Interp4Command *pCmd4 = pCreateCmd_Set();
-
-/////
-
-  cout << endl;
-  cout << pCmd->GetCmdName() << endl;
-  cout << endl;
-  pCmd->PrintSyntax();
-  cout << endl;
-  pCmd->PrintCmd();
-  cout << endl;
-
-  cout << endl;
-  cout << pCmd2->GetCmdName() << endl;
-  cout << endl;
-  pCmd2->PrintSyntax();
-  cout << endl;
-  pCmd2->PrintCmd();
-  cout << endl;
-
-  cout << endl;
-  cout << pCmd3->GetCmdName() << endl;
-  cout << endl;
-  pCmd3->PrintSyntax();
-  cout << endl;
-  pCmd3->PrintCmd();
-  cout << endl;
-
-  cout << endl;
-  cout << pCmd4->GetCmdName() << endl;
-  cout << endl;
-  pCmd4->PrintSyntax();
-  cout << endl;
-  pCmd4->PrintCmd();
-  cout << endl;
-///
-  delete pCmd;
-  delete pCmd2;
-  delete pCmd3;
-  delete pCmd4;
-
-  dlclose(pLibHnd_Move);
-  dlclose(pLibHnd_Rotate);
-  dlclose(pLibHnd_Pause);
-  dlclose(pLibHnd_Set);
-  */

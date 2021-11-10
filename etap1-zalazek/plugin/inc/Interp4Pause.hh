@@ -16,9 +16,9 @@
  */
 
 /*!
- * \brief Modeluje polecenie dla robota mobilnego, które wymusza jego ruch do przodu
+ * \brief Modeluje polecenie dla robota mobilnego, które wymusza przerwe w dzialaniu robota
  *
- *  Klasa modeluje ...
+ *  Klasa modeluje polecenie, ktore zatrzymuje dzialania robota na okreslony czas
  */
 class Interp4Pause: public Interp4Command {
   /*
@@ -26,7 +26,15 @@ class Interp4Pause: public Interp4Command {
    *  do przechowywania wartości parametrów danego polecenia.
    *  Ponieżej zdefiniowane jest tylko jedno pole jako przykład.
    */
+
+     /*!
+   * \brief Zmienna odpowiedzialna za okreslenie czasu przestoju w dzialaniu robota
+   */
   double  _Sleep_Time;
+
+    /*!
+   * \brief Zmienna przechowujaca nazwe obiektu
+   */
   std::string _ObjName;
  public:
   /*!

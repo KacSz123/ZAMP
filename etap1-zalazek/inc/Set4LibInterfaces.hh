@@ -8,7 +8,8 @@
 using namespace std;
 
 /*!
-*   \file Plik zawiera definicję klasy Set4LibInterfaces
+*   \file 
+* Plik zawiera definicję klasy Set4LibInterfaces
 *
 *
 */
@@ -36,32 +37,35 @@ public:
 
 /*!
 * \brief Konstruktor bezparametryczny
-* Dodaje 4 wtyczki do listy polecen
+* Dodaje 4 wtyczki do listy polecen wywolujac funckje
+* LoadLibrary() dla sciezki do kazdej wtyczki
 */
 Set4LibInterfaces();
 
 
 /*!
 * \brief Destruktor
+* 
 */
 ~ Set4LibInterfaces(){};
 
 /*!
 *   \brief Funkcja wyszukujaca z listy polecenie i zwraca jej iterator
-*   \param[in] - path sciezka do biblioteki dynamicznej
+*   \param[in] LibPath -  sciezka do biblioteki dynamicznej
 */
 LibMap::iterator FindLibrary(string LibPath);
 
 
 /*!
-* \brief Funkcja zwraca kolejny iterator
+* \brief Funkcja zwraca kolejny iterator listy 
+* 
 */
 LibMap::iterator GetEndMap();
 
 /*!
 *\brief Funkcja wczytujaca wskazana biblioteke
-*
-* \param[in] - LibName - nazwa polecenia(wtyczki)
+*   dodaje polecenie do listy
+* \param[in] LibName - nazwa polecenia(wtyczki)
 */
 void LoadLibrary(string LibName);
 
@@ -70,6 +74,7 @@ private:
 
 /*!
 *\brief lista polecen
+* lista dostepnych dla uzytkownika polecen
 */
 LibMap _MapLib;
 };
