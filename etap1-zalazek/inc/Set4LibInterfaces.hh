@@ -10,7 +10,7 @@ using namespace std;
 /*!
 *   \file 
 * Plik zawiera definicję klasy Set4LibInterfaces
-*
+*   \brief Plik zawiera definicje klasy Set4LibInterfaces
 *
 */
 

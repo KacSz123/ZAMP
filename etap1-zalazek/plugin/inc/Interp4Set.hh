@@ -29,7 +29,7 @@ class Interp4Set: public Interp4Command {
    *  do przechowywania wartości parametrów danego polecenia.
    *  Ponieżej zdefiniowane jest tylko jedno pole jako przykład.
    */
-  string _ObjName;
+  std::string _ObjName;
 
   /*!
    * \brief Zmienna opisująca kat robota wzgledem osi X
@@ -74,6 +74,10 @@ class Interp4Set: public Interp4Command {
    * \brief Wyświetla nazwę polecenia
    */
   virtual const char* GetCmdName() const;
+  /*!
+   * \brief Wyświetla nazwę polecenia
+   */
+  virtual std::string GetObjName() const;
   /*!
    * \brief Wykonuje polecenie oraz wizualizuje jego realizację
    */

@@ -35,7 +35,7 @@ void Interp4Move::PrintCmd() const
   /*
    *  Tu trzeba napisać odpowiednio zmodyfikować kod poniżej.
    */
-  cout << GetCmdName() << " "<<_ObjName<< " "<< _Speed_mmS  << " "<<_Path_mm<< endl;
+  cout << GetCmdName() << " "<<_ObjName<< " "<< _Speed_mmS  << " "<<_Path_mm<< " "<<endl;
 }
 
 
@@ -46,7 +46,13 @@ const char* Interp4Move::GetCmdName() const
 {
   return ::GetCmdName();
 }
-
+/*!
+ *
+ */
+std::string Interp4Move::GetObjName() const
+{
+  return _ObjName;
+}
 
 /*!
  *
@@ -56,6 +62,13 @@ bool Interp4Move::ExecCmd( MobileObj  *pMobObj,  int  Socket) const
   /*
    *  Tu trzeba napisać odpowiedni kod.
    */
+  Vector3D tmpVec;
+  tmpVec[0]=(_Path_mm*sin((pMobObj->GetAng_Roll_deg()*3.14)/180));
+  tmpVec[1]=(_Path_mm*cos((pMobObj->GetAng_Roll_deg()*3.14)/180));
+  
+  
+  pMobObj->SetPosition_m(pMobObj->GetPositoin_m()+tmpVec);
+
   return true;
 }
 

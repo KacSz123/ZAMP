@@ -3,9 +3,13 @@
 
 
 #include <string>
+#include <memory>
+#include <map>
+#include <sstream>
+
 #include "Vector3D.hh"
 
-
+using namespace std;
 /*!
  * \file
  * \brief Zawiera definicję klasy MobileObj
@@ -65,6 +69,10 @@
         * musi to być nazwa unikalna wśród wszystkich obiektów na scenie.
         */
        std::string  _Name;
+
+       Vector3D _Scale;
+
+       uint8_t _ColRGB[3];
 
      public:
       /*!
@@ -148,7 +156,56 @@
 	* Udostępnia nazwę obiektu w trybie tylko do odczytu.
         */
        const std::string & GetName() const { return _Name; }
+
+
+
+       void SetScale(Vector3D &Sc){_Scale=Sc;}
+
+       void SetColourInRGB(const std::string &RGBstr) 
+       {
+               int *RGB=new int[3];
+
+               std::istringstream IStrm(RGBstr);
+               IStrm >> RGB[0] >> RGB[1] >> RGB[2];
+       
+        if(RGB[0] > 255)
+                RGB[0]=255;
+        else if (RGB[0] < 0)
+                RGB[0] =0;
+
+        if(RGB[1] > 255)
+                RGB[1]=255;
+        else if (RGB[1] < 0)
+                RGB[1] =0;
+
+        if(RGB[2] > 255)
+                RGB[2]=255;
+        else if (RGB[2] < 0)
+                RGB[2] = 0;
+
+
+        _ColRGB[0]=(uint8_t)RGB[0];
+        _ColRGB[1]=(uint8_t)RGB[1];
+        _ColRGB[2]=(uint8_t)RGB[2];
+        
+       delete RGB;
+       }
+
+       std::string GetStateDesc()
+       {
+               char c_str[50];
+               int len = sprintf(c_str, "Name=%s ROTXYZ_deg=(%f,%f,%f)\n", _Name.c_str(),
+                                            _Ang_Roll_deg, _Ang_Pitch_deg, _Ang_Yaw_deg);
+        std::string str(c_str,len);
+
+        return str;
+       
+       }
+        
     };
 
+
+
+   
 
 #endif

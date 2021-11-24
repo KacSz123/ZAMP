@@ -4,6 +4,7 @@
 #include <iostream>
 #include "MobileObj.hh"
 
+using namespace std;
 /*!
  * \file
  * \brief Definicja klasy Interp4Command
@@ -37,6 +38,10 @@
     */
    virtual const char* GetCmdName() const = 0;
    /*!
+    * \brief Wyświetla nazwę obiektu.
+    */
+   virtual std::string GetObjName() const = 0;
+   /*!
     * \brief Wykonuje polecenie oraz wizualizuje jego realizację.
     */
    virtual bool ExecCmd( MobileObj *pMobObj, int Socket ) const = 0;
@@ -44,6 +49,7 @@
     * \brief Czyta wartości parametrów danego polecenia.
     */
    virtual bool ReadParams(std::istream& Strm_CmdsList) = 0;
+
  };
 
 #endif

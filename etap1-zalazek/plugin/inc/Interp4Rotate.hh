@@ -48,6 +48,10 @@ class Interp4Rotate: public Interp4Command {
    */
   virtual const char* GetCmdName() const;
   /*!
+   * \brief Wyświetla nazwę polecenia
+   */
+  virtual std::string GetObjName() const;
+  /*!
    * \brief Wykonuje polecenie oraz wizualizuje jego realizację
    */
   virtual bool ExecCmd( MobileObj  *pMobObj, int Socket) const;

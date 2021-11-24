@@ -1,0 +1,33 @@
+#include "Scene.hh"
+
+void Scene::PrintMobileObjectList()
+{
+    cout<<endl<<"Obiekty na scenie:\n";
+    for(MobileObjectList::iterator i = MObjList.begin(); i!=MObjList.end(); ++i)
+        cout<<"\t->\t"<<i->first<<endl;
+
+    cout<<endl<<endl;
+}
+
+bool Scene::IfMobileObjectExists(string Name)
+{
+    auto It = MObjList.find(Name);
+
+    if (It == MObjList.end())
+        return false;
+    else    
+        return true;
+}
+
+
+std::shared_ptr<MobileObj> Scene::FindMobileObject(std::string Name)
+{
+    auto It = MObjList.find(Name);
+
+    if(It == MObjList.end())
+        return nullptr;
+    else
+        return It->second; 
+        
+
+}

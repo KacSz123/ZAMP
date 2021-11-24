@@ -28,7 +28,7 @@ Interp4Command* CreateCmd(void)
 /*!
  *
  */
-Interp4Set::Interp4Set():    _Coord_X(0),_Coord_Y(0), _Angle_OX(0),_Angle_OY(0),_Angle_OZ(0)
+Interp4Set::Interp4Set():   _ObjName("No"), _Coord_X(0),_Coord_Y(0), _Angle_OX(0),_Angle_OY(0),_Angle_OZ(0)
 {
 
 
@@ -54,6 +54,15 @@ void Interp4Set::PrintCmd() const
 const char* Interp4Set::GetCmdName() const
 {
   return ::GetCmdName();
+}
+
+
+/*!
+ *
+ */
+std::string Interp4Set::GetObjName() const
+{
+  return _ObjName;
 }
 
 

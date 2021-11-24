@@ -52,15 +52,24 @@ const char* Interp4Rotate::GetCmdName() const
   return ::GetCmdName();
 }
 
+/*!
+ *
+ */
+std::string Interp4Rotate::GetObjName() const
+{
+  return _ObjName;
+}
+
 
 /*!
  *
  */
 bool Interp4Rotate::ExecCmd( MobileObj  *pMobObj,  int  Socket) const
 {
-  /*
-   *  Tu trzeba napisać odpowiedni kod.
-   */
+    
+pMobObj->SetAng_Roll_deg(pMobObj->GetAng_Roll_deg()+_Angle_deg);    
+
+
   return true;
 }
 

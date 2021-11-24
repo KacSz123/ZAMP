@@ -30,7 +30,7 @@ class LibInterface{
     /*!
      *
      *  \brief Nazwa polecenia dla robota
-     *
+     *  Docelowo są to 4 nazyw: Set, Pasue, Rotate, Move
      *
      *
      */
@@ -41,6 +41,7 @@ class LibInterface{
     /*!
      *
      *  \brief Konstruktor parametryczny
+     *  tworzy instancje klasy podstawie podanej ścieżki biblioteki
      *
      *  \param[in] BibPath - sciezka do biblioteki dynamicznej
      */
@@ -57,7 +58,7 @@ class LibInterface{
     
     /*!
      *  \brief Wskaźnik na nowa instancje interpretera polecen
-     *
+     *  
      *
      */
         Interp4Command*(*pCreateCmd)(void);
@@ -65,7 +66,7 @@ class LibInterface{
     private:
     /*!
      *   \brief Wskaźnik na bibliotekę
-     *
+     *     
      *
      */
  void *BibHandler; 

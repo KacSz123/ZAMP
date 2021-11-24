@@ -28,7 +28,10 @@ class Interp4Move: public Interp4Command {
    *  Ponieżej zdefiniowane jest tylko jedno pole jako przykład.
    */
   int  _Speed_mmS;
+
   int _Path_mm;
+ 
+  
   string _ObjName;
  public:
   /*!
@@ -47,6 +50,10 @@ class Interp4Move: public Interp4Command {
    * \brief Wyświetla nazwę polecenia
    */
   virtual const char* GetCmdName() const;
+  /*!
+   * \brief Wyswietla nazwe obiektu
+   */
+   virtual std::string GetObjName() const;
   /*!
    * \brief Wykonuje polecenie oraz wizualizuje jego realizację
    */

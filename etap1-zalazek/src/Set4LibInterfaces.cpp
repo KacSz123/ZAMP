@@ -19,6 +19,8 @@ LibMap::iterator Set4LibInterfaces::GetEndMap()
 {
     return _MapLib.end();
 }
+
+
 void Set4LibInterfaces::LoadLibrary(string LibPath)
 {
     auto pLib = make_shared<LibInterface>(LibPath);

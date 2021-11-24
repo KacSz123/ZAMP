@@ -51,6 +51,13 @@ const char* Interp4Pause::GetCmdName() const
 {
   return ::GetCmdName();
 }
+/*!
+ *
+ */
+ std::string Interp4Pause::GetObjName() const
+{
+  return _ObjName;
+}
 
 
 /*!
