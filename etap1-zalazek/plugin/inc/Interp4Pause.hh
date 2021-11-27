@@ -5,7 +5,7 @@
 # pragma interface
 # pragma implementation
 #endif
-
+#include <unistd.h>
 #include "Interp4Command.hh"
 
 /*!

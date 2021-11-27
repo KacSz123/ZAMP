@@ -158,9 +158,17 @@ using namespace std;
        const std::string & GetName() const { return _Name; }
 
 
-
+        /*!
+         *\brief Funkcja ustala skale w jakiej rysowany jest obiekt
+         * \param[in] Sc - referencja do skali z pliku
+         */
        void SetScale(Vector3D &Sc){_Scale=Sc;}
 
+
+        /*!
+         *\brief funckja ustanawia kolor w jakim rysowany jest obiekt
+         *\param[in] RGBstr - napis opisujacy barwe 
+         */
        void SetColourInRGB(const std::string &RGBstr) 
        {
                int *RGB=new int[3];
@@ -193,15 +201,21 @@ using namespace std;
 
        std::string GetStateDesc()
        {
-               char c_str[50];
-               int len = sprintf(c_str, "Name=%s ROTXYZ_deg=(%f,%f,%f)\n", _Name.c_str(),
-                                            _Ang_Roll_deg, _Ang_Pitch_deg, _Ang_Yaw_deg);
-        std::string str(c_str,len);
+          //     char c_str[50];
+          //     int len = sprintf(c_str, "Name=%s ROTXYZ_deg=(%f,%f,%f)\n", _Name.c_str(),
+           //                                 _Ang_Roll_deg, _Ang_Pitch_deg, _Ang_Yaw_deg);
+       // std::string str(c_str,len);
 
-        return str;
+       // return str;
        
        }
         
+       char* SendMsmgAboutMobObj(char* ServerCmd)
+       {
+            // string s=ServerCmd;
+          //   istringstream ss;
+        //     ss<<s;
+       } 
     };
 
 

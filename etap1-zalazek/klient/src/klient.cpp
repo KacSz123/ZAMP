@@ -361,6 +361,7 @@ int main()
   //  thread   Thread4Sending(Fun_Sender, Socket4Sending, &ClientSender);
 
   thread   Thread4Sending(Fun_CommunicationThread,&ClientSender);
+  
   const char *sConfigCmds =
 "Clear\n"
 "AddObj Name=Podstawa1 RGB=(20,200,200) Scale=(4,2,1) Shift=(0.5,0,0) RotXYZ_deg=(0,-45,20) Trans_m=(-1,3,0)\n"
@@ -379,11 +380,11 @@ int main()
 
   cout << "Akcja:" << endl;    
   while (ChangeState(Scn)) {
-    usleep(20000);
+    usleep(2000);
     Scn.MarkChange();
     usleep(100000);
   }
-  usleep(100000);
+  usleep(10000);
 
   //-------------------------------------
   // Należy pamiętać o zamknięciu połączenia.

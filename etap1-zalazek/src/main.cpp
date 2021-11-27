@@ -203,15 +203,34 @@ int main(int argc, char **argv)
   Set4LibInterfaces LibraryList; // Lista (zestaw) wczytanych bibliotek
   Scene ProgramScene;            // Scena, lista obiektów mobilnych
 
-  //Sender   ClientSender(Socket4Sending,&Scn);
+  int Socket4Sending;
+   if (!OpenConnection(Socket4Sending)){cout<<1; return 1;}
+  
+  Sender   ClientSender(Socket4Sending,&ProgramScene);
+  
+  thread T4S(Fun_CommunicationThread,&ClientSender);
+  
   //thread   Thread4Sending(Fun_CommunicationThread,&ClientSender);
+  const char *sConfigCmds =
+"Clear\n"
+"AddObj Name=Podstawa RGB=(20,200,200) Scale=(4,2,1) Shift=(0.5,0,0) RotXYZ_deg=(0,-45,20) Trans_m=(-1,3,0)\n"
+"AddObj Name=Podstawa.Ramie1 RGB=(200,0,0) Scale=(3,3,1) Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(4,0,0)\n"
+"AddObj Name=Podstawa.Ramie1.Ramie2 RGB=(100,200,0) Scale=(2,2,1) Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(3,0,0)\n";       
 
-  // Sprawdzanie liczby argumentów
+
+  cout << "Konfiguracja:" << endl;
+  cout << sConfigCmds << endl;
+  
+  Send(Socket4Sending,sConfigCmds);
+ 
+
+    ProgramScene.MarkChange();
+ 
+  
+  usleep(100000);
   if (argc != 2)
   {
-    cout << endl
-         << "Niepoprawna liczba argumentów"
-         << endl;
+    cout << endl<< "Niepoprawna liczba argumentów"<< endl;
     return 1;
   }
 
@@ -244,4 +263,18 @@ int main(int argc, char **argv)
   // Parsowanie pliku na komendy z parametrami
  if (!ExecActions(iStrm, LibraryList, ProgramScene))
     return 3;
+
+    
+ProgramScene.PrintMobileObjectList(); 
+  usleep(3000000);
+  
+  cout << "Close\n" << endl; // To tylko, aby pokazac wysylana instrukcje
+ 
+ 
+ //zamykanie
+  Send(Socket4Sending,"Clear\n");
+  Send(Socket4Sending,"Close\n");
+  ClientSender.CancelCountinueLooping();
+  T4S.join();
+  close(Socket4Sending);
 }

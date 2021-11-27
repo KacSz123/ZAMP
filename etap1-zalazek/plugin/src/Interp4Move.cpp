@@ -60,7 +60,7 @@ std::string Interp4Move::GetObjName() const
 bool Interp4Move::ExecCmd( MobileObj  *pMobObj,  int  Socket) const
 {
   /*
-   *  Tu trzeba napisać odpowiedni kod.
+   *  do dokonczenia
    */
   Vector3D tmpVec;
   tmpVec[0]=(_Path_mm*sin((pMobObj->GetAng_Roll_deg()*3.14)/180));

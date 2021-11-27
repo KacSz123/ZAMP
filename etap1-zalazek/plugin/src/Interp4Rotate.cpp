@@ -66,8 +66,13 @@ std::string Interp4Rotate::GetObjName() const
  */
 bool Interp4Rotate::ExecCmd( MobileObj  *pMobObj,  int  Socket) const
 {
-    
-pMobObj->SetAng_Roll_deg(pMobObj->GetAng_Roll_deg()+_Angle_deg);    
+
+  if     (_Axis=='X')
+    pMobObj->SetAng_Roll_deg(pMobObj->GetAng_Roll_deg()+_Angle_deg);   
+  else if(_Axis=='Y')
+    pMobObj->SetAng_Pitch_deg(pMobObj->GetAng_Pitch_deg()+_Angle_deg);   
+  else if(_Axis=='Z')
+    pMobObj->SetAng_Yaw_deg(pMobObj->GetAng_Yaw_deg()+_Angle_deg);    
 
 
   return true;

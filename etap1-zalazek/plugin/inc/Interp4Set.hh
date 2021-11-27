@@ -34,29 +34,33 @@ class Interp4Set: public Interp4Command {
   /*!
    * \brief Zmienna opisująca kat robota wzgledem osi X
    */
-  double  _Coord_X;
+  double  _Angle_OX;
 
   /*!
    * \brief Zmienna opisująca kat robota wzgledem osi Y
    */
-  double  _Coord_Y;
+  double  _Angle_OY;
 
-  //double  _Coord_Z;
+/*!
+    *\brief
+    * zmienna opisujaca kat robota wzgledem osi Y
+    */
+  double  _Angle_OZ;
 
   /*!
    * \brief Zmienna opisująca polozenie robota wzdluz osi X
    */
-  double  _Angle_OX;
+  double  _Coord_X;
 
     /*!
    * \brief Zmienna opisująca polozenie robota wzdluz osi Y
    */
-  double  _Angle_OY;
+  double  _Coord_Y;
 
   /*!
    * \brief Zmienna opisująca polozenie robota wzdluz osi Z
    */
-  double  _Angle_OZ;
+  double  _Coord_Z;
  public:
   /*!
    * \brief

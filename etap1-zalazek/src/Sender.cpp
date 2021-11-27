@@ -14,7 +14,7 @@ using std::cerr;
     if (HowManySent < 0)
     {
 
-        cerr << "!!!! Blad orzesylania !!!!!\n\n";
+        cerr << "!!!! Blad przesylania !!!!!\n\n";
     }
     return 0;
 
@@ -46,14 +46,14 @@ bool OpenConnection(int &rSocket)
   return true;
 }
 
-bool ChangeState(Scene &Scn) //GeomObject *pObj, AccessControl  *pAccCtrl)
-{
-/*  bool Changed;
+bool ChangeState(Scene &Scn) 
+{/*
+  bool Changed;
 
   while (true) {
     Scn.LockAccess(); // Zamykamy dostęp do sceny, gdy wykonujemy
                             // modyfikacje na obiekcie.
-    for (GeomObject &rObj : Scn._Container4Objects) {
+    for (MobileObj &rObj : Scn.Lis) {
        if (!(Changed = rObj.IncStateIndex())) { Scn.UnlockAccess();  return false; }
     }
     Scn.MarkChange();

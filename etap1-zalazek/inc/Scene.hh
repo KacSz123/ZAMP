@@ -63,7 +63,6 @@ MobileObjectList GetMobileObjectList(){return MObjList;};
 
 /*! \brief Przeszukuje liste i zwraca wskaznik na obiekt o zadanej nazwie
  * \param[in] Name - porzadana nazwa obiektu 
- *  \param[out] It - wskaznik na znaleziony obiekt lub nullptr
  */
 std::shared_ptr<MobileObj> FindMobileObject(std::string Name);
 
@@ -73,7 +72,12 @@ std::shared_ptr<MobileObj> FindMobileObject(std::string Name);
  */
 bool IfMobileObjectExists(string Name);
 
+char* CreateMsg(MobileObj* pMObj, char* ServerCmd)
+{
+  //  ostringstream Msg;
 
+   // Msg<<ServerCmd;
+}
 
 };
 

@@ -6,6 +6,8 @@
 #include "MobileObj.hh"
 #include "Scene.hh"
 using namespace std;
+
+
 typedef std::vector<std::string> LibraryList;
 
 class Configuration {

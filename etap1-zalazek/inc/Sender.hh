@@ -81,16 +81,44 @@ class Sender {
    
 
 };
-  
+
+/*!
+ * \brief Wysyła napis do poprzez gniazdo sieciowe.
+ *
+ * Wysyła napis do poprzez gniazdo sieciowe.
+ * \param[in] Sk2Server - deskryptor gniazda sieciowego, poprzez które 
+ *                        ma zostać wysłany napis w sensie języka C.
+ * \param[in] sMsg - zawiera napis, który ma zostać wysłany poprzez
+ *                    gniazdo sieciowe.
+ */
 int Send(int Sk2Server, const char *sMsg);
 
-
+/*!
+ * Otwiera połączenie sieciowe
+ * \param[out]  rSocket - deskryptor gniazda, poprzez które może być
+ *                        realizowana komunikacja sieciowa.
+ */
 bool OpenConnection(int &rSocket);
 
-
+/*!
+ * \brief Przykład wykonywania pojedynczej operacji z animacją.
+ *
+ * Przykład wykonywania pojedynczej operacji z animacją.
+ * \param[in] Scn- referencja na obiekt Sceny, dla którego ma być wykonana dana operacja
+ *                   zmiany jego stanu.
+ * \retval true - Jeśli dokonan zosała zmiana stanu wszystkich obiektów.
+ * \retval false - w przypadku przeciwnym.
+ */
 bool ChangeState(Scene &Scn);
 
-
+/*!
+ * \brief Funkcja jest treścią wątku komunikacyjnego
+ * 
+ * Funkcja jest treścią wątku komunikacyjnego.
+ * \param[in] pSnd - wskźnik, aodpowiada za śledenie zmian na scenie 
+ *                      i przesyłanie do serwera graficznego
+ *                      aktualnego stanu sceny, gdyby uległ on zmianie.
+ */
 void Fun_CommunicationThread(Sender *pSnd);
 
 
