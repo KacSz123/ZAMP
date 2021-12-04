@@ -61,6 +61,13 @@ using namespace std;
 	* że współrzędne wyrażone są w metrach.
         */
        Vector3D  _Position_m;
+       /*!
+        * \brief Współrzędne aktualnej pozycji obiektu.
+	*
+	* Współrzędne aktualnej pozycji obiektu. Przyjmuje się,
+	* że współrzędne wyrażone są w metrach.
+        */
+       Vector3D  _Shift;
 
        /*!
         * \brief Nazwa obiektu, która go indentyfikuje.
@@ -201,21 +208,21 @@ using namespace std;
 
        std::string GetStateDesc()
        {
-          //     char c_str[50];
-          //     int len = sprintf(c_str, "Name=%s ROTXYZ_deg=(%f,%f,%f)\n", _Name.c_str(),
-           //                                 _Ang_Roll_deg, _Ang_Pitch_deg, _Ang_Yaw_deg);
-       // std::string str(c_str,len);
-
-       // return str;
+        char c_str[200];
+        
+        int len = sprintf(c_str, "Name=%s RGB=(%d, %d, %d) Shift=(%f, %f, %f) Scale=(%f, %f, %f) RotXYZ_deg=(%f,%f,%f) Trans_m=(%f, %f, %f)\n",
+                 _Name.c_str(),
+                _ColRGB[0], _ColRGB[1], _ColRGB[2],
+                _Shift[0], _Shift[1], _Shift[2],
+                _Scale[0], _Scale[1], _Scale[2],
+                _Ang_Roll_deg, _Ang_Pitch_deg, _Ang_Yaw_deg,
+                _Position_m[0], _Position_m[1], _Position_m[2]);
        
+        std::string Str(c_str,len);
+        return Str;
        }
         
-       char* SendMsmgAboutMobObj(char* ServerCmd)
-       {
-            // string s=ServerCmd;
-          //   istringstream ss;
-        //     ss<<s;
-       } 
+
     };
 
 

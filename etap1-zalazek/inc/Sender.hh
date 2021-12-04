@@ -18,6 +18,20 @@
 #include "Port.hh"
 using namespace std;
 
+
+/*!
+ * \brief Wysyła napis do poprzez gniazdo sieciowe.
+ *
+ * Wysyła napis do poprzez gniazdo sieciowe.
+ * \param[in] Sk2Server - deskryptor gniazda sieciowego, poprzez które 
+ *                        ma zostać wysłany napis w sensie języka C.
+ * \param[in] sMsg - zawiera napis, który ma zostać wysłany poprzez
+ *                    gniazdo sieciowe.
+ */
+int Send(int Sk2Server, const char *sMsg);
+
+
+
 /*!
  * \brief Modeluje nadajnik poleceń odzwierciedlających aktualny stan sceny.
  *
@@ -78,20 +92,26 @@ class Sender {
    */
    void Watching_and_Sending();
  
-   
+   void SendMobileObjectsToServer(Scene &Scn) //, Sender &ClientSender)
+    {
+    auto MobileObjects = Scn.GetPtrs();
+
+      for (auto MobileObject : MobileObjects)
+      {
+        auto object = MobileObject.get();
+
+        string msg = "AddObj ";
+        msg += object->GetStateDesc();
+
+        std::cout << endl         << msg << endl;
+
+        Send(0, msg.c_str());
+      }
+    }
 
 };
 
-/*!
- * \brief Wysyła napis do poprzez gniazdo sieciowe.
- *
- * Wysyła napis do poprzez gniazdo sieciowe.
- * \param[in] Sk2Server - deskryptor gniazda sieciowego, poprzez które 
- *                        ma zostać wysłany napis w sensie języka C.
- * \param[in] sMsg - zawiera napis, który ma zostać wysłany poprzez
- *                    gniazdo sieciowe.
- */
-int Send(int Sk2Server, const char *sMsg);
+
 
 /*!
  * Otwiera połączenie sieciowe

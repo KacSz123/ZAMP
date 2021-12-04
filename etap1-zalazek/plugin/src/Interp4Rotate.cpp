@@ -106,5 +106,5 @@ Interp4Command* Interp4Rotate::CreateCmd()
  */
 void Interp4Rotate::PrintSyntax() const
 {
-  cout << "   Rotate  NazwaObiektu PredkoscObrotu[stopnie/sek.] Kat[stopnie]" << endl;
+  cout << "   Rotate  NazwaObiektu PredkoscObrotu[stopnie/sek.] Os[''] Kat[stopnie]" << endl;
 }

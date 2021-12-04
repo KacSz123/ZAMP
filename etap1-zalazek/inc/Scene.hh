@@ -6,6 +6,7 @@
 #include <memory>
 #include <map>
 #include <string>
+#include<vector>
 
 using namespace std;
 
@@ -72,11 +73,14 @@ std::shared_ptr<MobileObj> FindMobileObject(std::string Name);
  */
 bool IfMobileObjectExists(string Name);
 
-char* CreateMsg(MobileObj* pMObj, char* ServerCmd)
+std::vector<std::shared_ptr<MobileObj>> GetPtrs()
 {
-  //  ostringstream Msg;
+    std::vector<std::shared_ptr<MobileObj>> Ptrs;
 
-   // Msg<<ServerCmd;
+    for (MobileObjectList::iterator i = MObjList.begin(); i != MObjList.end(); i++)
+        Ptrs.push_back(i->second);
+
+    return Ptrs;
 }
 
 };
