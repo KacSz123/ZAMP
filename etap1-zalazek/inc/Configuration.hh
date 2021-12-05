@@ -12,20 +12,21 @@ typedef std::vector<std::string> LibraryList;
 
 class Configuration {
   
-LibraryList LibList;
+LibraryList _LibList;
+MobileObjectList _MObjList;
 
 
-MobileObjectList MObjList;
 public:
 
-void AddMobileObject(const std::string &Name, const std::string &RGB,Vector3D &Scale);
+void AddMobileObject(const std::string &Name, const std::string &RGB, const Vector3D &Scale,
+const Vector3D &Shift, const Vector3D &Trans, const Vector3D &Rotation );
 
 
-void AddLibraryName(const std::string &LibraryName){LibList.push_back(LibraryName);};
+void AddLibraryName(const std::string &LibraryName){_LibList.push_back(LibraryName);};
 
-LibraryList GetLibraryList() {return LibList;};
+LibraryList GetLibraryList() {return _LibList;};
 
-MobileObjectList GetMobileObjList(){return MObjList;};
+MobileObjectList GetMobileObjList(){return _MObjList;};
 
 
 };

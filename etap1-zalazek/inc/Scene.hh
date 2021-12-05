@@ -76,13 +76,30 @@ bool IfMobileObjectExists(string Name);
 std::vector<std::shared_ptr<MobileObj>> GetPtrs()
 {
     std::vector<std::shared_ptr<MobileObj>> Ptrs;
-
-    for (MobileObjectList::iterator i = MObjList.begin(); i != MObjList.end(); i++)
-        Ptrs.push_back(i->second);
-
+    MobileObjectList::iterator i;
+    for (i= MObjList.begin(); i != MObjList.end(); i++)
+    {
+            Ptrs.push_back(i->second);
+    }
     return Ptrs;
 }
 
+std::vector<std::string> GetNamesList()
+{
+    std::vector<std::string> TmpVecStr;
+    MobileObjectList::iterator i ;
+    for(i=MObjList.begin(); i != MObjList.end(); i++)
+    {
+        TmpVecStr.push_back(i->first);
+    }
+    return TmpVecStr;
+}
+
+void AddMobileObject(std::string Name)
+{
+    std::shared_ptr<MobileObj> new_Ptr = std::make_shared<MobileObj>();
+    this->MObjList.insert({Name, new_Ptr});
+}
 };
 
 #endif

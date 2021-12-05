@@ -147,7 +147,18 @@ using namespace std;
        * \param[in] rPos_m - współrzędne nowgo położenia. Przyjmuje się,
        *                     że są one wyrażone w metrach.
        */
-       void SetPosition_m(const Vector3D &rPos_m) { _Position_m = rPos_m; }
+       void SetShift_m(const Vector3D &rPos_m) { _Shift = rPos_m; }
+       
+       
+       /*!
+       * \brief Zmienia współrzędne położenia obiektu.
+       *
+       * Zmienia współrzędne punktu, który definiuje położenia obiektu.
+       * Domyślnie przyjmuje się, że jest to geometryczny środek bryły.
+       * \param[in] rShift_m - współrzędne nowgo położenia. Przyjmuje się,
+       *                     że są one wyrażone w metrach.
+       */
+       void SetPosition_m(const Vector3D &rShift_m) { _Position_m = rShift_m; }
 
 
       /*!
@@ -169,7 +180,7 @@ using namespace std;
          *\brief Funkcja ustala skale w jakiej rysowany jest obiekt
          * \param[in] Sc - referencja do skali z pliku
          */
-       void SetScale(Vector3D &Sc){_Scale=Sc;}
+       void SetScale(const Vector3D &Sc){_Scale=Sc;}
 
 
         /*!
@@ -206,15 +217,46 @@ using namespace std;
        delete RGB;
        }
 
+
+        void SetColourInRGB(const Vector3D &newColRGB) 
+       {
+               int *RGB=new int[3];
+
+                RGB[0]=newColRGB[0];
+                RGB[1]=newColRGB[1];
+                RGB[2]=newColRGB[2];
+       
+        if(RGB[0] > 255)
+                RGB[0]=255;
+        else if (RGB[0] < 0)
+                RGB[0] =0;
+
+        if(RGB[1] > 255)
+                RGB[1]=255;
+        else if (RGB[1] < 0)
+                RGB[1] =0;
+
+        if(RGB[2] > 255)
+                RGB[2]=255;
+        else if (RGB[2] < 0)
+                RGB[2] = 0;
+
+
+        _ColRGB[0]=(uint8_t)RGB[0];
+        _ColRGB[1]=(uint8_t)RGB[1];
+        _ColRGB[2]=(uint8_t)RGB[2];
+        
+       delete RGB;
+       }
        std::string GetStateDesc()
        {
         char c_str[200];
         
-        int len = sprintf(c_str, "Name=%s RGB=(%d, %d, %d) Shift=(%f, %f, %f) Scale=(%f, %f, %f) RotXYZ_deg=(%f,%f,%f) Trans_m=(%f, %f, %f)\n",
+        int len = sprintf(c_str, "Name=%s RGB=(%d, %d, %d) Scale=(%f, %f, %f) Shift=(%f, %f, %f) RotXYZ_deg=(%f,%f,%f) Trans_m=(%f, %f, %f)\n",
                  _Name.c_str(),
                 _ColRGB[0], _ColRGB[1], _ColRGB[2],
-                _Shift[0], _Shift[1], _Shift[2],
                 _Scale[0], _Scale[1], _Scale[2],
+                _Shift[0], _Shift[1], _Shift[2],
                 _Ang_Roll_deg, _Ang_Pitch_deg, _Ang_Yaw_deg,
                 _Position_m[0], _Position_m[1], _Position_m[2]);
        

@@ -92,22 +92,8 @@ class Sender {
    */
    void Watching_and_Sending();
  
-   void SendMobileObjectsToServer(Scene &Scn) //, Sender &ClientSender)
-    {
-    auto MobileObjects = Scn.GetPtrs();
 
-      for (auto MobileObject : MobileObjects)
-      {
-        auto object = MobileObject.get();
-
-        string msg = "AddObj ";
-        msg += object->GetStateDesc();
-
-        std::cout << endl         << msg << endl;
-
-        Send(0, msg.c_str());
-      }
-    }
+    
 
 };
 
