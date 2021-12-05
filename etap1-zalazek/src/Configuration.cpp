@@ -2,8 +2,8 @@
 
 #include"Configuration.hh"
 
-void Configuration::AddMobileObject(const std::string &Name, const std::string &RGB, const Vector3D &Scale,
-const Vector3D &Shift, const Vector3D &Trans, const Vector3D &Rotation )
+void Configuration::AddMobileObject(const std::string &Name,const Vector3D &Shift,  const Vector3D &Scale,
+const Vector3D &Rotation,const Vector3D &Trans,  const std::string &RGB )
 {
 
  auto _nMobObj = std::make_shared<MobileObj>(); //nowy obiekt

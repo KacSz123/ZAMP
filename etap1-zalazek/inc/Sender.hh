@@ -58,6 +58,7 @@ class Sender {
    */
    Scene          *_pScn = nullptr;
 
+  bool ifConnected;
   
  public:
   /*!
@@ -93,7 +94,7 @@ class Sender {
    void Watching_and_Sending();
  
 
-    
+  int Send_m(const char *Msg);    
 
 };
 

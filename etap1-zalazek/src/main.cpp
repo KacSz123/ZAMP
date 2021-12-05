@@ -211,28 +211,7 @@ int main(int argc, char **argv)
   thread T4S(Fun_CommunicationThread,&ClientSender);
   
   //thread   Thread4Sending(Fun_CommunicationThread,&ClientSender);
-  const char *sConfigCmds =
-"Clear\n"
-"AddObj Name=Podstawa RGB=(20,200,200) Scale=(4,2,1) Shift=(0.5,0,0) RotXYZ_deg=(0,-45,20) Trans_m=(-1,3,0)\n"
-"AddObj Name=Podstawa.Ramie1 RGB=(200,0,0) Scale=(3,3,1) Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(4,0,0)\n"
-"AddObj Name=Podstawa.Ramie1.Ramie2 RGB=(100,200,0) Scale=(2,2,1) Shift=(0.5,0,0) RotXYZ_deg=(0,-45,0) Trans_m=(3,0,0)\n";       
 
-
-  cout << "Konfiguracja:" << endl;
-  cout << sConfigCmds << endl;
-  
-  Send(Socket4Sending,sConfigCmds);
- 
-
-    ProgramScene.MarkChange();
- 
-  
-  usleep(100000);
-  if (argc != 2)
-  {
-    cout << endl<< "Niepoprawna liczba argumentów"<< endl;
-    return 1;
-  }
 
   istringstream iStrm; // strumień danych wejściowych komend
 
@@ -243,6 +222,7 @@ int main(int argc, char **argv)
     return 2;
   }
 
+  Config.PrintMobileObjectList();
   // Ładowanie bibliotek
   ConfigLibraryList = Config.GetLibraryList();
   for (long unsigned int i = 0; i < ConfigLibraryList.size(); i++) // long unsigned int żeby uniknąć ostrzeżenia przy kompilacji
@@ -255,6 +235,28 @@ int main(int argc, char **argv)
   ProgramScene.LoadMobileObjectsList(MobileObjList);
 
   ProgramScene.PrintMobileObjectList(); // testowo wyświetla nazwy obiektów
+
+  cout << "Konfiguracja:" << endl;
+  auto ObScptr=ProgramScene.GetPtrs();
+
+
+  for(auto obj_ptr : ObScptr)
+  {
+
+    auto Tmpobj=obj_ptr.get();
+    cout<<"dupa1\n";
+    std::string msg="AddObj " + Tmpobj->GetStateDesc();
+  Send(Socket4Sending,msg.c_str());
+
+    ProgramScene.MarkChange(); 
+  
+  usleep(100000);
+  if (argc != 2)
+  {
+    cout << endl<< "Niepoprawna liczba argumentów"<< endl;
+    return 1;
+  }
+  }
 
   // Czytanie pliku preprocesorem do strumienia
   ExecPreprocesor("opis_dzialan.cmd", iStrm);

@@ -18,8 +18,8 @@ MobileObjectList _MObjList;
 
 public:
 
-void AddMobileObject(const std::string &Name, const std::string &RGB, const Vector3D &Scale,
-const Vector3D &Shift, const Vector3D &Trans, const Vector3D &Rotation );
+void AddMobileObject(const std::string &Name,const Vector3D &Shift,  const Vector3D &Scale,
+const Vector3D &Rotation,const Vector3D &Trans,  const std::string &RGB );
 
 
 void AddLibraryName(const std::string &LibraryName){_LibList.push_back(LibraryName);};
@@ -28,6 +28,19 @@ LibraryList GetLibraryList() {return _LibList;};
 
 MobileObjectList GetMobileObjList(){return _MObjList;};
 
+void PrintMobileObjectList()
+{
+    cout<<endl<<"Obiekty na scenie:\n";
+    for(MobileObjectList::iterator i = _MObjList.begin(); i!=_MObjList.end(); ++i)
+     {
+        cout<<"\t->\t"<<i->first<<":\t";
+        cout<<"Pos"<<i->second->GetPositoin_m();
+        cout<<"\tRPY("<<i->second->GetAng_Roll_deg()<<","
+        <<i->second->GetAng_Pitch_deg()<<","<<i->second->GetAng_Yaw_deg()<<")\n";
+     }   
+
+    cout<<endl<<endl;
+}
 
 };
 

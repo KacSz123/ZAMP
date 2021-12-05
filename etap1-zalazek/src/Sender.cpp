@@ -98,9 +98,12 @@ void Fun_CommunicationThread(Sender *pSnd){pSnd->Watching_and_Sending();}
        for (auto pObj : _MobObjsList) 
        {
             MobileObj *tmpMobObj = pObj.get();
-            std::string ObjStatus = tmpMobObj->GetStateDesc();  
+
+            std::string ObjStatus ="UpdateObj "+ tmpMobObj->GetStateDesc();  
                                      // Ta instrukcja to tylko uproszczony przykład
-	        cout << "\n\nWysylanie : "<<ObjStatus;
+	        //cout << "\n\nWysylanie :UpdateObj "<<ObjStatus;
+
+
             Send(_Socket,ObjStatus.c_str()); // Tu musi zostać wywołanie odpowiedniej
                                            // metody/funkcji gerującej polecenia dla serwera.
        }
@@ -108,4 +111,27 @@ void Fun_CommunicationThread(Sender *pSnd){pSnd->Watching_and_Sending();}
        _pScn->CancelChange();
        _pScn->UnlockAccess();
      }
+   }
+
+   int Sender:: Send_m(const char *Msg)
+   {
+     ssize_t MsgLen = (ssize_t)strlen(Msg);
+     ssize_t SendMsgLen;
+
+     if(true==this->ifConnected)
+     {
+       while((SendMsgLen = write(this->_Socket,Msg, MsgLen))>0)
+       {
+        MsgLen-=SendMsgLen;
+        Msg+=SendMsgLen;
+       }
+       if(SendMsgLen<0)
+        std::cerr<<"!!!!!* Blad przesylania *!!!!!!\n";
+       
+     }
+     else
+      std::cerr<<"!!!!!!* Polaczenie nie zostało otwarte *!!!!!!!\n";
+      
+      
+      return 0;
    }
