@@ -69,7 +69,7 @@ std::string Interp4Set::GetObjName() const
 /*!
  *
  */
-bool Interp4Set::ExecCmd( MobileObj  *pMobObj,  int  Socket) const
+bool Interp4Set::ExecCmd( MobileObj  *pMobObj, AccessControl *pAC) const
 {
   Vector3D tmpVec;
   tmpVec[0]=_Coord_X;

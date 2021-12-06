@@ -89,7 +89,7 @@ bool ExecActions(istringstream &iStrm, Set4LibInterfaces &LibraryList, Scene &Pr
       return false;
     }
 
-    object_name = pCommand->GetObjName();
+     object_name = pCommand->GetObjName();
     //cout<<endl<<endl<<"!!debug!!"<<object_name<<endl<<endl;
     if (!ProgramScene.IfMobileObjectExists(object_name))
     {
@@ -99,9 +99,11 @@ bool ExecActions(istringstream &iStrm, Set4LibInterfaces &LibraryList, Scene &Pr
 
     auto object_ptr(ProgramScene.FindMobileObject(object_name));
 
+    
     pCommand->PrintCmd();
 
     pCommand->ExecCmd(object_ptr.get(), 0);
+    
   }
   return true;
 }
@@ -190,194 +192,33 @@ bool ReadFile(const char *sFileName, Configuration &rConfig)
 
   delete pParser;
   delete pHandler;
-  return true;
+  return true;  
 }
 
-void InitObj(int Socket4Sending, Scene *Sc)
-{
-  auto ObScptr = Sc->GetPtrs();
-
-  for (auto obj_ptr : ObScptr)
-  {
-
-    auto Tmpobj = obj_ptr.get();
-    std::string msg = "AddObj " + Tmpobj->GetStateDesc();
-    Send(Socket4Sending, msg.c_str());
-
-    Sc->MarkChange();
-  }
-  usleep(2000000);
-}
 int main(int argc, char **argv)
 {
-
-  Scene *ProgramScene;
-  Sender *ProgramSender;
-  Configuration ProgramConfig;
-  Set4LibInterfaces LibraryList;
-  if (argc != 2)
-  {
-    cout << endl
-         << "Niepoprawna liczba argumentów" << endl;
-    return 1;
-  }
-
-  // Wczytanie konfiguracji z pliku XML
-  if (!ReadFile("config/config.xml", ProgramConfig))
-  {
-    cout << endl
-         << "Wczytywanie pliku konfiguracji config/config.xml nie powiodło się" << endl;
-    return 2;
-  }
-
-  auto ConfigLibraryList = ProgramConfig.GetLibraryList();
-  ;
-
-  for (size_t i; i < ConfigLibraryList.size(); i++)
-  {
-    LibraryList.LoadLibrary(ConfigLibraryList.at(i));
-  }
-
-  auto ProgramObjList = ProgramConfig.GetMobileObjList();
-
-  ProgramScene = new Scene(ProgramObjList);
-  ProgramScene->PrintMobileObjectList();
-
-  std::istringstream InStream;
-  // Czytanie pliku preprocesorem do strumienia
-  ExecPreprocesor("opis_dzialan.cmd", InStream);
-  cout << endl
-       << "Cały plik:" << endl
-       << InStream.str() << endl;
+  Configuration Config;          // Obiekt konfiguracji, konfiguracja zostanie wczytana po odczytaniu pliku XML
+  LibraryList ConfigLibraryList;     // Lista bibliotek odczytana z pliku konfiguracyjnego
+  MobileObjectList MobileObjList;   // Lista obiektów mobilnych odczytana z pliku konfiguracyjnego
+  Set4LibInterfaces LibraryList; // Lista (zestaw) wczytanych bibliotek
+  Scene ProgramScene;            // Scena, lista obiektów mobilnych
 
   int Socket4Sending;
-  ProgramSender = new Sender(Socket4Sending, ProgramScene);
-
-  if (!OpenConnection(Socket4Sending))
-  {
-    cout << "Nie mozna sie polaczyc\n";
-    return 1;
-  }
-
-  Send(Socket4Sending, "Clear\n");
-  InitObj(Socket4Sending, ProgramScene);
-
-  std::string ProgCmdName, ProgObjName;
-  while (InStream >> ProgCmdName)
-  {
-    std::vector<std::thread *> ListOfThreads;
-    ////komendy rownolegle -- na watkach
-    if ((ProgCmdName == "Begin_Parallel_Actions"))
-    {
-      cout << "komenda rownolegla\n";
-       //nastepne wczytanie aby wczytac nazwe komendy
-
-      while (!(ProgCmdName == "End_Parallel_Actions"))
-      {
-        InStream >> ProgCmdName;
-        // InStream>>ProgCmdName;
-        if (ProgCmdName == "End_Parallel_Actions")
-        {
-          break;
-        }
-        //InStream >> ProgObjName;
-        LibMap::iterator cmd_iterator = LibraryList.FindLibrary(ProgCmdName);
-        if (cmd_iterator == LibraryList.GetEndMap())
-        {
-          cerr << "Komenda o nazwie '" << ProgCmdName << "' nie istnieje" << endl;
-          // return false;
-        }
-        Interp4Command *pCommand = cmd_iterator->second->pCreateCmd();
-
-        if (!pCommand->ReadParams(InStream))
-        {
-          cerr << "Czytanie parametrów komendy '" << ProgCmdName << "' nie powiodło się" << endl;
-          return false;
-        }
-        ProgObjName = pCommand->GetObjName();
-        //cout<<endl<<endl<<"!!debug!!"<<object_name<<endl<<endl;
-        if (!ProgramScene->IfMobileObjectExists(ProgObjName))
-        {
-          cerr << "Obiekt o nazwie '" << ProgObjName << "' nie istnieje" << endl;
-          return false;
-        }
-
-        auto object_ptr(ProgramScene->FindMobileObject(ProgObjName));
-
-        pCommand->PrintCmd();
-
-        pCommand->ExecCmd(object_ptr.get(), 0);
-      }
-    }
-
-
-
-    ///////////komendy nie rownolegle/////////////
-    else
-    {
-      cout << "komendy nie równolegle\n";
-      // InStream>>ProgObjName;
-      LibMap::iterator cmd_iterator = LibraryList.FindLibrary(ProgCmdName);
-      if (cmd_iterator == LibraryList.GetEndMap())
-      {
-        cerr << "Komenda o nazwie '" << ProgCmdName << "' nie istnieje" << endl;
-        // return false;
-      }
-      Interp4Command *pCommand = cmd_iterator->second->pCreateCmd();
-
-      if (!pCommand->ReadParams(InStream))
-      {
-        cerr << "Czytanie parametrów komendy '" << ProgCmdName << "' nie powiodło się" << endl;
-        return false;
-      }
-      ProgObjName = pCommand->GetObjName();
-      //cout<<endl<<endl<<"!!debug!!"<<object_name<<endl<<endl;
-      if (!ProgramScene->IfMobileObjectExists(ProgObjName))
-      {
-        cerr << "Obiekt o nazwie '" << ProgObjName << "' nie istnieje" << endl;
-        return false;
-      }
-
-      auto object_ptr(ProgramScene->FindMobileObject(ProgObjName));
-
-      pCommand->PrintCmd();
-
-      pCommand->ExecCmd(object_ptr.get(), 0);
-    }
-
-  } //koniec glownego while
-
-  //if(false== ProgramSender->open_)
-  /*Configuration Config;           // Obiekt konfiguracji, konfiguracja zostanie wczytana po odczytaniu pliku XML
-  // Lista bibliotek odczytana z pliku konfiguracyjnego
-  MobileObjectList MobileObjList; // Lista obiektów mobilnych odczytana z pliku konfiguracyjnego
-   // Lista (zestaw) wczytanych bibliotek
-  Scene ProgramScene;             // Scena, lista obiektów mobilnych
-
-
-
- 
-
-  int Socket4Sending;
-  if (!OpenConnection(Socket4Sending))
-  {
-    cout << 1;
-    return 1;
-  }
-
-  Sender ClientSender(Socket4Sending, &ProgramScene);
-
-  thread T4S(Fun_CommunicationThread, &ClientSender);
-
+   if (!OpenConnection(Socket4Sending)){cout<<1; return 1;}
+  
+  Sender   ClientSender(Socket4Sending,&ProgramScene);
+  
+  thread T4S(Fun_CommunicationThread,&ClientSender);
+  
   //thread   Thread4Sending(Fun_CommunicationThread,&ClientSender);
+
 
   istringstream iStrm; // strumień danych wejściowych komend
 
   // Wczytanie konfiguracji z pliku XML
   if (!ReadFile("config/config.xml", Config))
   {
-    cout << endl
-         << "Wczytywanie pliku konfiguracji config/config.xml nie powiodło się" << endl;
+    cout << endl<< "Wczytywanie pliku konfiguracji config/config.xml nie powiodło się"<< endl;
     return 2;
   }
 
@@ -396,54 +237,46 @@ int main(int argc, char **argv)
   ProgramScene.PrintMobileObjectList(); // testowo wyświetla nazwy obiektów
 
   cout << "Konfiguracja:" << endl;
+  auto ObScptr=ProgramScene.GetPtrs();
 
-  auto ObScptr = ProgramScene.GetPtrs();
 
-  for (auto obj_ptr : ObScptr)
+  for(auto obj_ptr : ObScptr)
   {
 
-    auto Tmpobj = obj_ptr.get();
-    std::string msg = "AddObj " + Tmpobj->GetStateDesc();
-    Send(Socket4Sending, msg.c_str());
+    auto Tmpobj=obj_ptr.get();
+    cout<<"dupa1\n";
+    std::string msg="AddObj " + Tmpobj->GetStateDesc();
+  Send(Socket4Sending,msg.c_str());
 
-    ProgramScene.MarkChange();
-
-    
-    if (argc != 2)
-    {
-      cout << endl
-           << "Niepoprawna liczba argumentów" << endl;
-      return 1;
-    }
-
-    usleep(200000);
+    ProgramScene.MarkChange(); 
+  
+  usleep(100000);
+  if (argc != 2)
+  {
+    cout << endl<< "Niepoprawna liczba argumentów"<< endl;
+    return 1;
+  }
   }
 
   // Czytanie pliku preprocesorem do strumienia
   ExecPreprocesor("opis_dzialan.cmd", iStrm);
-  cout << endl
-       << "Cały plik:" << endl
-       << iStrm.str() << endl;
+  cout << endl<< "Cały plik:"<< endl<< iStrm.str()<< endl;
 
   // Parsowanie pliku na komendy z parametrami
-  if (!ExecActions(iStrm, LibraryList, ProgramScene))
+ if (!ExecActions(iStrm, LibraryList, ProgramScene))
     return 3;
+
+    
+ProgramScene.PrintMobileObjectList(); 
+  usleep(3000000);
   
-
-
-  cout << "Close\n"
-       << endl; // To tylko, aby pokazac wysylana instrukcje
-
-  //zamykanie
-  Send(Socket4Sending, "Clear\n");
-  Send(Socket4Sending, "Close\n");
+  cout << "Close\n" << endl; // To tylko, aby pokazac wysylana instrukcje
+ 
+ 
+ //zamykanie
+  Send(Socket4Sending,"Clear\n");
+  Send(Socket4Sending,"Close\n");
   ClientSender.CancelCountinueLooping();
   T4S.join();
-  close(Socket4Sending);*/
-  //zamykanie
-  Send(Socket4Sending, "Clear\n");
-  Send(Socket4Sending, "Close\n");
-  ProgramSender->CancelCountinueLooping();
-  //T4S.join();
   close(Socket4Sending);
 }

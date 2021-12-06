@@ -57,18 +57,30 @@ std::string Interp4Move::GetObjName() const
 /*!
  *
  */
-bool Interp4Move::ExecCmd( MobileObj  *pMobObj,  int  Socket) const
+bool Interp4Move::ExecCmd( MobileObj  *pMobObj,  AccessControl *pAC) const
 {
-  /*
-   *  do dokonczenia
-   */
-  Vector3D tmpVec;
-  tmpVec[0]=(_Path_mm*sin((pMobObj->GetAng_Roll_deg()*3.14)/180));
-  tmpVec[1]=(_Path_mm*cos((pMobObj->GetAng_Roll_deg()*3.14)/180));
-  
-  
-  pMobObj->SetPosition_m(pMobObj->GetPositoin_m()+tmpVec);
+int direction = _Speed_mmS > 0 ? 1 : -1;
+  int iterations = std::floor(_Path_mm/_Speed_mmS);
+  cout<<"MOVE: ITER: "<<iterations<<endl;
+  for (int i = 0; i < iterations; ++i)
+  {
+    pAC->LockAccess();
 
+    Vector3D position = pMobObj->GetPositoin_m();
+    //double angle = pMobObj->GetAng_Roll_deg();
+
+    position[0] +=_Speed_mmS * direction * (cos(M_PI * pMobObj->GetAng_Yaw_deg()/180));
+    position[1] += _Speed_mmS* direction * sin(M_PI * pMobObj->GetAng_Yaw_deg()/180);
+    //position[2] += _Speed_mmS* direction *  (cos(M_PI * pMobObj->GetAng_Yaw_deg()/180));
+    pMobObj->SetPosition_m(position);
+
+    
+
+    pAC->MarkChange();
+    pAC->UnlockAccess();
+    usleep(100000);
+  }
+  
   return true;
 }
 

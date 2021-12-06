@@ -64,18 +64,78 @@ std::string Interp4Rotate::GetObjName() const
 /*!
  *
  */
-bool Interp4Rotate::ExecCmd( MobileObj  *pMobObj,  int  Socket) const
+bool Interp4Rotate::ExecCmd( MobileObj  *pMobObj,  AccessControl *pAC) const
 {
+  ////
 
-  if     (_Axis=='X')
-    pMobObj->SetAng_Roll_deg(pMobObj->GetAng_Roll_deg()+_Angle_deg);   
-  else if(_Axis=='Y')
-    pMobObj->SetAng_Pitch_deg(pMobObj->GetAng_Pitch_deg()+_Angle_deg);   
-  else if(_Axis=='Z')
-    pMobObj->SetAng_Yaw_deg(pMobObj->GetAng_Yaw_deg()+_Angle_deg);    
+double Step;
+  char axis = _Axis;
 
+  switch (axis)
+  {
+  case 'X':
+    Step = pMobObj->GetAng_Roll_deg();
+    break;
 
+  case 'Y':
+    Step = pMobObj->GetAng_Pitch_deg();
+    break;
+
+  case 'Z':
+    Step = pMobObj->GetAng_Yaw_deg();
+    break;
+  }
+
+  int direction = _Rot_Speed> 0 ? 1 : -1;
+
+  double setpoint = Step + _Angle_deg * direction;
+
+  while (setpoint != Step)
+  {
+    pAC->LockAccess();
+
+    Step += _Rot_Speed;
+
+    if (direction == 1)
+    {
+      if (Step > setpoint)
+      {
+        Step = setpoint;
+      }
+    }
+    else
+    {
+      if (Step < setpoint)
+      {
+        Step = setpoint;
+      }
+    }
+
+    if(_Axis=='X')
+    {
+      pMobObj->SetAng_Roll_deg(Step);
+      }
+    else if(_Axis=='Y')
+{
+      pMobObj->SetAng_Pitch_deg(Step);
+}
+
+    else if(_Axis=='Z')
+    {
+      pMobObj->SetAng_Yaw_deg(Step);
+    
+    }
+
+    pAC->MarkChange();
+    pAC->UnlockAccess();
+    usleep(100000);
+  }
+  
   return true;
+
+
+
+  ///
 }
 
 

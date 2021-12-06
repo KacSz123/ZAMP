@@ -63,7 +63,7 @@ const char* Interp4Pause::GetCmdName() const
 /*!
  *
  */
-bool Interp4Pause::ExecCmd( MobileObj  *pMobObj,  int  Socket) const
+bool Interp4Pause::ExecCmd( MobileObj  *pMobObj, AccessControl *pAC) const
 {
   for(int i=0; i<_Sleep_Time; ++i)
   usleep(1);
