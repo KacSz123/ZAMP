@@ -30,6 +30,8 @@ class LibInterface{
     /*!
      *
      *  \brief Nazwa polecenia dla robota
+     * 
+     * Nazwa polecenia dla robota
      *  Docelowo są to 4 nazyw: Set, Pasue, Rotate, Move
      *
      *

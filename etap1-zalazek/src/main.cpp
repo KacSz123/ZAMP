@@ -54,7 +54,6 @@ bool ExecPreprocesor(const char *FileName, istringstream &IStrm4Cmds)
   return pclose(pProc) == 0;
 }
 
-
 /*!
  * \brief Czyta z pliku opis poleceń i dodaje je do listy komend,
  * które robot musi wykonać.
@@ -161,12 +160,13 @@ void InitObj(int Socket4Sending, Scene *Sc)
 
 int main(int argc, char **argv)
 {
-
+  //deklaracja potrzebnych zmiennych
   Scene *ProgramScene;
   Sender *ProgramSender;
   Configuration ProgramConfig;
   Set4LibInterfaces LibraryList;
 
+  //sprawdzenie arg podanych przy starcue
   if (argc != 2)
   {
     cout << endl
@@ -183,7 +183,6 @@ int main(int argc, char **argv)
   }
 
   auto ConfigLibraryList = ProgramConfig.GetLibraryList();
-  ;
 
   for (size_t i; i < ConfigLibraryList.size(); i++)
   {
@@ -196,6 +195,7 @@ int main(int argc, char **argv)
   ProgramScene->PrintMobileObjectList();
 
   std::istringstream InStream;
+
   // Czytanie pliku preprocesorem do strumienia
   ExecPreprocesor(argv[1], InStream);
   cout << endl
@@ -216,12 +216,11 @@ int main(int argc, char **argv)
 
   std::string ProgCmdName, ProgObjName;
 
-  // ProgramSender->setSocket(Socket4Sending);
-
+  //wczytywanie komend
   while (InStream >> ProgCmdName)
   {
     std::vector<std::thread *> ListOfThreads;
-    ////komendy rownolegle -- na watkach
+    ////komendy rownolegle 
     if ((ProgCmdName == "Begin_Parallel_Actions"))
     {
       cout << "==komendy rownolegle==\n";
@@ -267,8 +266,9 @@ int main(int argc, char **argv)
     }
     else
     {
-      cout << "pojedyncza komenda\n";
+     //komendy pojedyncze
       LibMap::iterator cmd_iterator = LibraryList.FindLibrary(ProgCmdName);
+      
       if (cmd_iterator == LibraryList.GetEndMap())
       {
         cerr << "Komenda o nazwie '" << ProgCmdName << "' nie istnieje" << endl;
@@ -282,7 +282,7 @@ int main(int argc, char **argv)
         return false;
       }
       ProgObjName = pCommand->GetObjName();
-      //cout<<endl<<endl<<"!!debug!!"<<object_name<<endl<<endl;
+      
       if (!ProgramScene->IfMobileObjectExists(ProgObjName))
       {
         cerr << "Obiekt o nazwie '" << ProgObjName << "' nie istnieje" << endl;
@@ -299,16 +299,20 @@ int main(int argc, char **argv)
     for (auto ThrObj : ListOfThreads)
     {
       ThrObj->join();
-      //  UpdateObj(Socket4Sending, ProgramScene);
       delete ThrObj;
     }
   }
+
+
+  //zamkniecie
   ProgramScene->PrintMobileObjectList();
   Send(Socket4Sending, "Clear\n");
   //Send(Socket4Sending, "Close\n");
   ProgramSender->CancelCountinueLooping();
   T4S.join();
   close(Socket4Sending);
+  //usuniecie
   delete ProgramScene;
   delete ProgramSender;
+  return 0;
 }

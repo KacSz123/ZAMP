@@ -40,7 +40,7 @@ Scene(MobileObjectList ML){MObjList=ML;};
 /*! \brief 
  * Dekonstruktor 
  */
-~Scene(){};
+~Scene(){ };
 
 /*! \brief Ładuje liste obiketow do sceny
  *  
@@ -52,27 +52,47 @@ void LoadMobileObjectsList(MobileObjectList &MOL){MObjList=MOL;};
 
 /*! \brief Wypisuje nazwy wszystkich obiektow na scenei
  *  
+ *
+ * Wypisuje nazwy wszystkich obiektow na scenie przez stdo
  */
 void PrintMobileObjectList();
 
 
 /*! \brief Zwraca liste obiektow mobilnych ze sceny
+ *
+ * 
+ * Zwraca liste obiektow mobilnych znajdujacych sie na scenie.
  *  \param[out] MObjList - Lista aktualnych obiektow mobilnych na scenie
  */
 
 MobileObjectList GetMobileObjectList(){return MObjList;};
 
 /*! \brief Przeszukuje liste i zwraca wskaznik na obiekt o zadanej nazwie
+ * 
+ * Przeszukuje liste i zwraca wskaznik na obiekt o zadanej nazwie
+ * 
  * \param[in] Name - porzadana nazwa obiektu 
  */
 std::shared_ptr<MobileObj> FindMobileObject(std::string Name);
 
 
-/*! \brief Sprawdza czy obiekt o zadanej nazwie istnieje w liscie
+/*! \brief Sprawdza czy obiekt o zadanej nazwie istnieje w liscie 
+ * 
+ * Sprawdza czy obiekt o zadanej nazwie istnieje w liscie
+ * 
  *  \param[in] Name - nazwa szukanego obiektu (string)
+ * \retval true - obiekt o podanej nazwie istnieje
+ * \retval false - obiekt o podanej nazwie nie istnieje
  */
 bool IfMobileObjectExists(string Name);
 
+
+/*! \brief Zwraca vector wskaźników na obiekty mobilne
+ * 
+ * Zwraca vector wskaźników na obiekty mobilne dostepne na scenie
+ * 
+ * \param[out] Ptrs - vector obiektow na scenie
+ */
 std::vector<std::shared_ptr<MobileObj>> GetPtrs()
 {
     std::vector<std::shared_ptr<MobileObj>> Ptrs;
@@ -84,6 +104,14 @@ std::vector<std::shared_ptr<MobileObj>> GetPtrs()
     return Ptrs;
 }
 
+/*! \brief Zwraca vector stringow
+ *
+ * Zwraca vector obiektów typu string - nazwy obiektow
+  *
+  * na scenie
+ * 
+ * \param[out] TmpVecStr - vector obiektow na scenie
+ */
 std::vector<std::string> GetNamesList()
 {
     std::vector<std::string> TmpVecStr;
@@ -94,7 +122,13 @@ std::vector<std::string> GetNamesList()
     }
     return TmpVecStr;
 }
-
+/*! \brief Tworzy shared_ptr na MobileObj
+ *
+ * Tworzy shared_ptr na MobileObj i dodaje do listy
+  * na scenie
+ * 
+ * \param[in] Name - nazwa nowego obiektu [string]
+ */
 void AddMobileObject(std::string Name)
 {
     std::shared_ptr<MobileObj> new_Ptr = std::make_shared<MobileObj>();

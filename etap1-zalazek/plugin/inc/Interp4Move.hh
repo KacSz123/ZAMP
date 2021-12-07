@@ -56,6 +56,12 @@ class Interp4Move: public Interp4Command {
    virtual std::string GetObjName() const;
   /*!
    * \brief Wykonuje polecenie oraz wizualizuje jego realizację
+   *  
+   *    Wykonuje polecenie oraz wizualizuje jego realizację.
+   *  \param[in] pMobObj - Wskaźnik na obiekt mobilny, na ktorym ma byc wykonana
+   *  komenda
+   *  \param[in] pAC - wskaźnij na obiekt AccessControl - uzywany w celach
+   * przyznawania zasobów
    */
   virtual bool ExecCmd( MobileObj  *pMobObj, AccessControl *pAC) const;
   /*!

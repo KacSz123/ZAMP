@@ -93,16 +93,23 @@ class Sender {
    */
    void Watching_and_Sending();
   
+    /*!
+   * \brief Ta metoda sluzy do przypisania wartosci zmiennej _Socket
+   *
+   * Ta metoda sluzy do przypisania wartosci zmiennej _Socket. Powstala 
+   * w celach testowyc
+   * \param[in] S - deskryptor gniazda sieciowego, poprzez które
+   *                     wysyłane są polecenia.
+   */
   void setSocket(int S){_Socket=S;}
 
 
     /*!
-   * \brief Ta metoda służy do 
+   * \brief Ta metoda służy do wysylania wiadomosci
    *
-   * Przegląda scenę i tworzy odpowiednie polecenia, a następnie
-   * wysyła je do serwera.
-   * \param[in] Socket - deskryptor gniazda sieciowego, poprzez które
-   *                     wysyłane są polecenia.
+   * Ta metoda służy do wysylania wiadomosci przez otwarty port,
+   *  napisana do testow
+   * \param[in] Msg - wskaźnik na wysylana wiadomosc
    */
   int Send_m(const char *Msg);    
 
