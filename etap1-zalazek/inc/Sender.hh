@@ -92,8 +92,18 @@ class Sender {
    *                     wysyłane są polecenia.
    */
    void Watching_and_Sending();
- 
+  
+  void setSocket(int S){_Socket=S;}
 
+
+    /*!
+   * \brief Ta metoda służy do 
+   *
+   * Przegląda scenę i tworzy odpowiednie polecenia, a następnie
+   * wysyła je do serwera.
+   * \param[in] Socket - deskryptor gniazda sieciowego, poprzez które
+   *                     wysyłane są polecenia.
+   */
   int Send_m(const char *Msg);    
 
 };

@@ -35,7 +35,7 @@ public:
  * Konstruktor bezparametryczny wykozrystuje referenchje
  */
 
-Scene(){};
+Scene(MobileObjectList ML){MObjList=ML;};
 
 /*! \brief 
  * Dekonstruktor 

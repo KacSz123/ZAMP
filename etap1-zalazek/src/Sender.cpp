@@ -68,48 +68,46 @@ void Fun_CommunicationThread(Sender *pSnd){pSnd->Watching_and_Sending();}
 /************************!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*******************/
 /************************!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!*******************/
 
+
+
   void Sender::Watching_and_Sending() 
    {
      while (ShouldCountinueLooping()) 
      {
-       if (!_pScn->IsChanged())  { usleep(10000); continue; }
+       if (!_pScn->IsChanged()) 
+       
+        {
+           usleep(10000);
+          // _pScn->MarkChange();
+         continue;
+        }
        
        _pScn->LockAccess();
        
        
 
        //Lista obiektow MobileObjectList mapowane w scene.hh
-        MobileObjectList _MobObjs = _pScn->GetMobileObjectList();
-
-        //vector wskaznikow na obiekty mobilne
-        std::vector<std::shared_ptr<MobileObj>> _MobObjsList;
-
-        //iterator do przeszukania listy obiektow mob
-        MobileObjectList::iterator _It;
-
-        //Przypisanie wskaznikow do vectora obiektow
-        for(_It = _MobObjs.begin(); _It != _MobObjs.end(); ++_It)
-            _MobObjsList.push_back(_It->second);
+        auto _MobObjs = _pScn->GetPtrs();
 
 
-        
-
-       //------- Przeglądanie tej kolekcji to uproszczony przykład
-       for (auto pObj : _MobObjsList) 
+ 
+        for(auto ObjPtr:_MobObjs)
        {
-            MobileObj *tmpMobObj = pObj.get();
+            auto tmpMobObj = ObjPtr.get();
 
             std::string ObjStatus ="UpdateObj "+ tmpMobObj->GetStateDesc();  
                                      // Ta instrukcja to tylko uproszczony przykład
-	        //cout << "\n\nWysylanie :UpdateObj "<<ObjStatus;
+	        cout << "\n\nWysylanie:"<<ObjStatus;
 
-
-            Send(_Socket,ObjStatus.c_str()); // Tu musi zostać wywołanie odpowiedniej
-                                           // metody/funkcji gerującej polecenia dla serwera.
-       }
+          Send(_Socket,ObjStatus.c_str()); // Tu musi zostać wywołanie odpowiedniej
+          // usleep(10000);
+        //_pScn->MarkChange(); 
+        
        
-       _pScn->CancelChange();
-       _pScn->UnlockAccess();
+                             // metody/funkcji gerującej polecenia dla serwera.
+       } 
+      _pScn->CancelChange();
+      _pScn->UnlockAccess();     
      }
    }
 
@@ -127,10 +125,10 @@ void Fun_CommunicationThread(Sender *pSnd){pSnd->Watching_and_Sending();}
        }
        if(SendMsgLen<0)
         std::cerr<<"!!!!!* Blad przesylania *!!!!!!\n";
-       
-     }
-     else
+       else
       std::cerr<<"!!!!!!* Polaczenie nie zostało otwarte *!!!!!!!\n";
+     }
+     
       
       
       return 0;

@@ -3,8 +3,11 @@
 
 #include <iostream>
 #include "MobileObj.hh"
-
+#include "Sender.hh"
+#include <unistd.h>
 using namespace std;
+
+
 /*!
  * \file
  * \brief Definicja klasy Interp4Command
@@ -17,6 +20,8 @@ using namespace std;
  *
  *  Klasa modeluje ...
  */
+
+
  class Interp4Command {
   public:
    /*!
@@ -44,7 +49,7 @@ using namespace std;
    /*!
     * \brief Wykonuje polecenie oraz wizualizuje jego realizację.
     */
-   virtual bool ExecCmd( MobileObj *pMobObj, int Socket ) const = 0;
+   virtual bool ExecCmd( MobileObj *pMobObj, AccessControl *pAC) const = 0;
    /*!
     * \brief Czyta wartości parametrów danego polecenia.
     */

@@ -54,59 +54,6 @@ bool ExecPreprocesor(const char *FileName, istringstream &IStrm4Cmds)
   return pclose(pProc) == 0;
 }
 
-/*!
- * \brief Funkcja tworzy serię komend wraz z parametrami na podstawie zadanego strumienia.
- *
- * Funkcja interpretuje ciąg obiektów typu string w strumieniu utworzonym przez funkcję ExecPreprocesor(...) na serię komend wraz z parametrami.  
- * \param[in] iStrm - Strumień utworzony przez funkcję ExecPreprocesor(...) z zapisanym plikiem do przeparsowania na komendy.
- * \param[in] LibraryList - Lista wszystkich komend, potrzebna do sprawdzania poprawności zadanych komend w pliku.
- * \param[in] ProgramScene - Scena programu zawierające listę obiektów mobilnych.
- * \retval true - Utworzenie wszystkich komend zawartych w strumieniu z wartościami przepisanymi z pliku powiodło się.
- * \retval false - Utworzenie komend zawartych w strumieniu z wartościami przepisanymi z pliku nie powiodło się.
- */
-bool ExecActions(istringstream &iStrm, Set4LibInterfaces &LibraryList, Scene &ProgramScene)
-{
-  std::string command_name, object_name;
-
-  cout << "Nazwa_kom\tNazwa_Ob\tparametry\n";
-
-  while (iStrm >> command_name) // sprawdza, czy w strumieniu jest jeszcze jakaś komenda
-  {
-
-    // Sprawdzenie, czy komenda o podanej nazwie istnieje
-    LibMap::iterator cmd_iterator = LibraryList.FindLibrary(command_name);
-    if (cmd_iterator == LibraryList.GetEndMap())
-    {
-      cerr << "Komenda o nazwie '" << command_name << "' nie istnieje" << endl;
-      return false;
-    }
-
-    // Tworzy komendę na podstawie funkcji wtyczki
-    Interp4Command *pCommand = cmd_iterator->second->pCreateCmd();
-    if (!pCommand->ReadParams(iStrm))
-    {
-      cerr << "Czytanie parametrów komendy '" << command_name << "' nie powiodło się" << endl;
-      return false;
-    }
-
-     object_name = pCommand->GetObjName();
-    //cout<<endl<<endl<<"!!debug!!"<<object_name<<endl<<endl;
-    if (!ProgramScene.IfMobileObjectExists(object_name))
-    {
-      cerr << "Obiekt o nazwie '" << object_name << "' nie istnieje" << endl;
-      return false;
-    }
-
-    auto object_ptr(ProgramScene.FindMobileObject(object_name));
-
-    
-    pCommand->PrintCmd();
-
-    pCommand->ExecCmd(object_ptr.get(), 0);
-    
-  }
-  return true;
-}
 
 /*!
  * \brief Czyta z pliku opis poleceń i dodaje je do listy komend,
@@ -192,91 +139,176 @@ bool ReadFile(const char *sFileName, Configuration &rConfig)
 
   delete pParser;
   delete pHandler;
-  return true;  
+  return true;
+}
+
+void InitObj(int Socket4Sending, Scene *Sc)
+{
+  Sc->LockAccess();
+  auto ObScptr = Sc->GetPtrs();
+  for (auto obj_ptr : ObScptr)
+  {
+
+    auto Tmpobj = obj_ptr.get();
+    std::string msg = "AddObj " + Tmpobj->GetStateDesc();
+    Send(Socket4Sending, msg.c_str());
+
+    // Sc->MarkChange();
+  }
+  usleep(2000000);
+  Sc->UnlockAccess();
 }
 
 int main(int argc, char **argv)
 {
-  Configuration Config;          // Obiekt konfiguracji, konfiguracja zostanie wczytana po odczytaniu pliku XML
-  LibraryList ConfigLibraryList;     // Lista bibliotek odczytana z pliku konfiguracyjnego
-  MobileObjectList MobileObjList;   // Lista obiektów mobilnych odczytana z pliku konfiguracyjnego
-  Set4LibInterfaces LibraryList; // Lista (zestaw) wczytanych bibliotek
-  Scene ProgramScene;            // Scena, lista obiektów mobilnych
 
-  int Socket4Sending;
-   if (!OpenConnection(Socket4Sending)){cout<<1; return 1;}
-  
-  Sender   ClientSender(Socket4Sending,&ProgramScene);
-  
-  thread T4S(Fun_CommunicationThread,&ClientSender);
-  
-  //thread   Thread4Sending(Fun_CommunicationThread,&ClientSender);
+  Scene *ProgramScene;
+  Sender *ProgramSender;
+  Configuration ProgramConfig;
+  Set4LibInterfaces LibraryList;
 
-
-  istringstream iStrm; // strumień danych wejściowych komend
+  if (argc != 2)
+  {
+    cout << endl
+         << "Niepoprawna liczba argumentów" << endl;
+    return 1;
+  }
 
   // Wczytanie konfiguracji z pliku XML
-  if (!ReadFile("config/config.xml", Config))
+  if (!ReadFile("config/config.xml", ProgramConfig))
   {
-    cout << endl<< "Wczytywanie pliku konfiguracji config/config.xml nie powiodło się"<< endl;
+    cout << endl
+         << "Wczytywanie pliku konfiguracji config/config.xml nie powiodło się" << endl;
     return 2;
   }
 
-  Config.PrintMobileObjectList();
-  // Ładowanie bibliotek
-  ConfigLibraryList = Config.GetLibraryList();
-  for (long unsigned int i = 0; i < ConfigLibraryList.size(); i++) // long unsigned int żeby uniknąć ostrzeżenia przy kompilacji
+  auto ConfigLibraryList = ProgramConfig.GetLibraryList();
+  ;
+
+  for (size_t i; i < ConfigLibraryList.size(); i++)
   {
     LibraryList.LoadLibrary(ConfigLibraryList.at(i));
   }
 
-  // Wczytanie obiektów mobilnych z XML
-  MobileObjList = Config.GetMobileObjList();
-  ProgramScene.LoadMobileObjectsList(MobileObjList);
+  auto ProgramObjList = ProgramConfig.GetMobileObjList();
 
-  ProgramScene.PrintMobileObjectList(); // testowo wyświetla nazwy obiektów
+  ProgramScene = new Scene(ProgramObjList);
+  ProgramScene->PrintMobileObjectList();
 
-  cout << "Konfiguracja:" << endl;
-  auto ObScptr=ProgramScene.GetPtrs();
+  std::istringstream InStream;
+  // Czytanie pliku preprocesorem do strumienia
+  ExecPreprocesor(argv[1], InStream);
+  cout << endl
+       << "Cały plik:" << endl
+       << InStream.str() << endl;
 
-
-  for(auto obj_ptr : ObScptr)
+  int Socket4Sending;
+  if (!OpenConnection(Socket4Sending))
   {
-
-    auto Tmpobj=obj_ptr.get();
-    cout<<"dupa1\n";
-    std::string msg="AddObj " + Tmpobj->GetStateDesc();
-  Send(Socket4Sending,msg.c_str());
-
-    ProgramScene.MarkChange(); 
-  
-  usleep(100000);
-  if (argc != 2)
-  {
-    cout << endl<< "Niepoprawna liczba argumentów"<< endl;
+    cout << "Nie mozna sie polaczyc\n";
     return 1;
   }
+  ProgramSender = new Sender(Socket4Sending, ProgramScene);
+  thread T4S(Fun_CommunicationThread, ProgramSender);
+
+  Send(Socket4Sending, "Clear\n");
+  InitObj(Socket4Sending, ProgramScene);
+
+  std::string ProgCmdName, ProgObjName;
+
+  // ProgramSender->setSocket(Socket4Sending);
+
+  while (InStream >> ProgCmdName)
+  {
+    std::vector<std::thread *> ListOfThreads;
+    ////komendy rownolegle -- na watkach
+    if ((ProgCmdName == "Begin_Parallel_Actions"))
+    {
+      cout << "==komendy rownolegle==\n";
+      // InStream >> ProgCmdName;
+      //nastepne wczytanie aby wczytac nazwe komendy
+
+      while (!(ProgCmdName == "End_Parallel_Actions"))
+      {
+
+        InStream >> ProgCmdName;
+        if (ProgCmdName == "End_Parallel_Actions")
+        {
+          break;
+        }
+        // InStream >> ProgObjName;
+        LibMap::iterator cmd_iterator = LibraryList.FindLibrary(ProgCmdName);
+        if (cmd_iterator == LibraryList.GetEndMap())
+        {
+          cerr << "Komenda o nazwie '" << ProgCmdName << "' nie istnieje" << endl;
+          // return false;
+        }
+        Interp4Command *pCommand = cmd_iterator->second->pCreateCmd();
+
+        if (!pCommand->ReadParams(InStream))
+        {
+          cerr << "Czytanie parametrów komendy '" << ProgCmdName << "' nie powiodło się" << endl;
+          return false;
+        }
+        ProgObjName = pCommand->GetObjName();
+        //cout<<endl<<endl<<"!!debug!!"<<object_name<<endl<<endl;
+        if (!ProgramScene->IfMobileObjectExists(ProgObjName))
+        {
+          cerr << "Obiekt o nazwie '" << ProgObjName << "' nie istnieje" << endl;
+          return false;
+        }
+
+        auto object_ptr(ProgramScene->FindMobileObject(ProgObjName));
+
+        pCommand->PrintCmd();
+        std::thread *new_thr = new std::thread(&Interp4Command::ExecCmd, pCommand, object_ptr.get(), ProgramScene);
+        ListOfThreads.push_back(new_thr);
+      }
+    }
+    else
+    {
+      cout << "pojedyncza komenda\n";
+      LibMap::iterator cmd_iterator = LibraryList.FindLibrary(ProgCmdName);
+      if (cmd_iterator == LibraryList.GetEndMap())
+      {
+        cerr << "Komenda o nazwie '" << ProgCmdName << "' nie istnieje" << endl;
+        // return false;
+      }
+      Interp4Command *pCommand = cmd_iterator->second->pCreateCmd();
+
+      if (!pCommand->ReadParams(InStream))
+      {
+        cerr << "Czytanie parametrów komendy '" << ProgCmdName << "' nie powiodło się" << endl;
+        return false;
+      }
+      ProgObjName = pCommand->GetObjName();
+      //cout<<endl<<endl<<"!!debug!!"<<object_name<<endl<<endl;
+      if (!ProgramScene->IfMobileObjectExists(ProgObjName))
+      {
+        cerr << "Obiekt o nazwie '" << ProgObjName << "' nie istnieje" << endl;
+        return false;
+      }
+
+      auto object_ptr(ProgramScene->FindMobileObject(ProgObjName));
+
+      pCommand->PrintCmd();
+      std::thread *new_thr = new std::thread(&Interp4Command::ExecCmd, pCommand, object_ptr.get(), ProgramScene);
+      ListOfThreads.push_back(new_thr);
+    }
+
+    for (auto ThrObj : ListOfThreads)
+    {
+      ThrObj->join();
+      //  UpdateObj(Socket4Sending, ProgramScene);
+      delete ThrObj;
+    }
   }
-
-  // Czytanie pliku preprocesorem do strumienia
-  ExecPreprocesor("opis_dzialan.cmd", iStrm);
-  cout << endl<< "Cały plik:"<< endl<< iStrm.str()<< endl;
-
-  // Parsowanie pliku na komendy z parametrami
- if (!ExecActions(iStrm, LibraryList, ProgramScene))
-    return 3;
-
-    
-ProgramScene.PrintMobileObjectList(); 
-  usleep(3000000);
-  
-  cout << "Close\n" << endl; // To tylko, aby pokazac wysylana instrukcje
- 
- 
- //zamykanie
-  Send(Socket4Sending,"Clear\n");
-  Send(Socket4Sending,"Close\n");
-  ClientSender.CancelCountinueLooping();
+  ProgramScene->PrintMobileObjectList();
+  Send(Socket4Sending, "Clear\n");
+  //Send(Socket4Sending, "Close\n");
+  ProgramSender->CancelCountinueLooping();
   T4S.join();
   close(Socket4Sending);
+  delete ProgramScene;
+  delete ProgramSender;
 }

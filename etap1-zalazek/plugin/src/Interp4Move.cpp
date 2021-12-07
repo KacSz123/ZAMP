@@ -60,8 +60,8 @@ std::string Interp4Move::GetObjName() const
 bool Interp4Move::ExecCmd( MobileObj  *pMobObj,  AccessControl *pAC) const
 {
 int direction = _Speed_mmS > 0 ? 1 : -1;
-  int iterations = std::floor(_Path_mm/_Speed_mmS);
-  cout<<"MOVE: ITER: "<<iterations<<endl;
+  int iterations = std::floor(_Path_mm/abs(_Speed_mmS));
+  //cout<<"MOVE: ITER: "<<iterations<<endl;
   for (int i = 0; i < iterations; ++i)
   {
     pAC->LockAccess();
@@ -69,8 +69,8 @@ int direction = _Speed_mmS > 0 ? 1 : -1;
     Vector3D position = pMobObj->GetPositoin_m();
     //double angle = pMobObj->GetAng_Roll_deg();
 
-    position[0] +=_Speed_mmS * direction * (cos(M_PI * pMobObj->GetAng_Yaw_deg()/180));
-    position[1] += _Speed_mmS* direction * sin(M_PI * pMobObj->GetAng_Yaw_deg()/180);
+    position[0] +=abs(_Speed_mmS) * direction * (cos(M_PI * pMobObj->GetAng_Yaw_deg()/180));
+    position[1] += abs(_Speed_mmS)* direction * sin(M_PI * pMobObj->GetAng_Yaw_deg()/180);
     //position[2] += _Speed_mmS* direction *  (cos(M_PI * pMobObj->GetAng_Yaw_deg()/180));
     pMobObj->SetPosition_m(position);
 
