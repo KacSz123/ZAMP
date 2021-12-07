@@ -1,7 +1,7 @@
 #define ROTATE_SPEED 30
 #define Ob_A Podstawa
 #define Ob_B Ramie1
-/*
+/*----
  * Przykładowy zestaw poleceń
  */
 Set Ob_A  0 -30 0 20 10 5  //Polozenie A
